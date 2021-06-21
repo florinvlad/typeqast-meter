@@ -1,0 +1,4 @@
+create table if not exists client_address (
+client_id bigint not null unique,
+address_id bigint not null unique
+);
