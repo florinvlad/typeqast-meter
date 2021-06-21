@@ -31,29 +31,102 @@ git clone https://github.com/florinvlad/typeqast-meter
 
 available methods: 
 
-    GET (no parameters) returns a list of clients registered in the application
-    POST add new client (query params: name, address_id, meter_id)
+    GET returns a list of clients registered in the application
+       (no parameters) 
+
+    POST add new client 
+         sample json body: 
+            {
+            "name": "client_name1"
+            }
+
+    PUT update client
+         sample json body: 
+            {
+            "id":1
+            "name": "client_name1"
+            }
+
 
 ###/addresses
 
 available methods:
 
-    GET (no parameters) returns a list of addresses registered in the application
-    POST add new address (query params: country, city, street, number)
+    GET returns a list of addresses registered in the application
+         request parameters : id (optional)
+
+    POST add new address for existing client 
+      request parameters : client_id (mandatory)
+      sample json body:
+      {
+      "country": "country1",
+      "city": "city1",
+      "street": "street1",
+      "number": 1
+      }
+
+    PUT update existing client address
+      request parameters : client_id (mandatory)
+      sample json body:
+      {
+      "id": 4,
+      "country": "country1",
+      "city": "city1",
+      "street": "street1",
+      "number": 1
+      }
 
 ###/meters
 
 available methods:
 
-    GET (no parameters) returns a list of clients registered in the application
-    POST add new meter (query params: year, month, value)
+    GET returns a list of meters registered in the application
+         request parameters : id (optional)
 
-###/meters/aggregate
+    POST add new meter for existing client
+      request parameters : client_id (mandatory)
+      sample json body:
+      {
+      "name":"newmeter"
+      }
+
+    PUT update exististing client meter
+      request parameters : client_id (mandatory)
+      sample json body:
+      {
+      "id": 17,
+      "name":"newmeter"
+      }
+
+
+(query params: year, month, value)
+
+###/readings
 
 available methods:
 
-    GET (query parameters: year) returns the aggregate value of meter readings for that year
+    GET returns a list of readings registered in the application
+         (no parameters)
 
+    POST add new reading for an existing meter
+         request parameters : meter_id (mandatory)
+         sample json body:
+         {
+         "id": 10,
+         "year": 2001,
+         "month": "JANUARY",
+         "value": 1
+         }
+
+###/readings/aggregate
+
+available methods:
+
+    GET returns the aggregate value of meter readings for that year
+         request parameters: year (mandatory) , meter_id (optional)
+
+You can download a collection of postman requests at the following URL:
+https://www.getpostman.com/collections/c0a9f011c1bc405102eb
 
 ## Database access
 1. Access this URL
