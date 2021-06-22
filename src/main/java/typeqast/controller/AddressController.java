@@ -3,16 +3,15 @@ package typeqast.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Address;
-import typeqast.entities.response.AddressResponse;
 import typeqast.service.AddressService;
 
-import javax.validation.ConstraintViolationException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -36,18 +35,23 @@ public class AddressController {
 
         logger.info("Received create addresses request");
 
-        AddressResponse addressResponse = addressService.addAddress(address, clientId);
+        Address resultAddress = addressService.addAddress(address, clientId);
 
-        return new ResponseEntity<>(addressResponse.getAddress(), addressResponse.getStatus());
+        if (resultAddress != null) {
+            return new ResponseEntity<>(resultAddress, HttpStatus.CREATED);
+
+        } else {
+            return new ResponseEntity<>(resultAddress, HttpStatus.NOT_FOUND);
+        }
+
 
     }
 
     /**
      * Update address for an existing client
      *
-     * @param address json body
+     * @param address  json body
      * @param clientId id of client
-     *
      * @return
      */
     @PutMapping(RestEndpoints.ADDRESSES)
@@ -55,9 +59,14 @@ public class AddressController {
 
         logger.info("Received update addresses request");
 
-        AddressResponse responseAddress = addressService.updateAddress(address, clientId);
+        Address resultAddress = addressService.updateAddress(address, clientId);
 
-        return new ResponseEntity<>(responseAddress.getAddress(), responseAddress.getStatus());
+        if (resultAddress != null) {
+            return new ResponseEntity<>(resultAddress, HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity<>(resultAddress, HttpStatus.NOT_FOUND);
+        }
 
     }
 
@@ -76,7 +85,7 @@ public class AddressController {
         return new ResponseEntity<>(addresses, HttpStatus.OK);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> onValidationError(Exception ex) {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,8 +21,6 @@ import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Reading;
-import typeqast.entities.response.AggregateReadingResponse;
-import typeqast.entities.response.ReadingResponse;
 import typeqast.service.ReadingService;
 import typeqast.util.assertions.ReadingAssertions;
 
@@ -64,7 +61,7 @@ public class ReadingControllerTest {
 
         mockReading.setId(BigInteger.valueOf(1));
 
-        when(mockReadingService.addReading(any(), any())).thenReturn(new ReadingResponse(mockReading, HttpStatus.CREATED));
+        when(mockReadingService.addReading(any(), any())).thenReturn(mockReading);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.METER_ID, String.valueOf(1));
@@ -133,7 +130,7 @@ public class ReadingControllerTest {
 
         readingList.add(mockResultReading);
 
-        AggregateReadingResponse aggregateReadingResponse = new AggregateReadingResponse(new AggregateReading(2020, 1234L), HttpStatus.OK);
+        AggregateReading aggregateReadingResponse = new AggregateReading(2020, 1234L);
 
         given(mockReadingService.getAggregateReadings(any(), any())).willReturn(aggregateReadingResponse);
 
@@ -149,7 +146,7 @@ public class ReadingControllerTest {
         AggregateReading responseAggregateReading = new ObjectMapper().readValue(responseBodyString, AggregateReading.class);
 
         Assert.assertNotNull(responseAggregateReading);
-        Assert.assertEquals(aggregateReadingResponse.getAggregateReading().getTotal(), responseAggregateReading.getTotal());
+        Assert.assertEquals(aggregateReadingResponse.getTotal(), responseAggregateReading.getTotal());
         Assert.assertEquals(mockResultReading.getYear(), responseAggregateReading.getYear());
 
     }

@@ -3,14 +3,11 @@ package typeqast.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import typeqast.business.ReadingProcessor;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
-import typeqast.entities.response.AggregateReadingResponse;
-import typeqast.entities.response.ReadingResponse;
 import typeqast.repository.MeterRepository;
 import typeqast.repository.ReadingRepository;
 import typeqast.service.ReadingService;
@@ -33,28 +30,25 @@ public class ReadingServiceImpl implements ReadingService {
     private ReadingProcessor readingProcessor;
 
     @Override
-    public ReadingResponse addReading(Reading reading, BigInteger meterId) {
+    public Reading addReading(Reading reading, BigInteger meterId) {
 
-        ReadingResponse readingResponse = new ReadingResponse();
+        Reading saveReading = null;
 
         Optional<Meter> resultMeter = meterRepository.findOne(Example.of(new Meter(meterId)));
 
         if (resultMeter.isPresent()) {
             reading.setMeter(resultMeter.get());
-            readingResponse.setReading(readingRepository.save(reading));
-            readingResponse.setStatus(HttpStatus.CREATED);
-        } else {
-            readingResponse.setStatus(HttpStatus.NOT_FOUND);
+            saveReading = readingRepository.save(reading);
         }
 
-        return readingResponse;
+        return saveReading;
 
     }
 
     @Override
-    public ReadingResponse updateReading(Reading reading, BigInteger meterId) {
+    public Reading updateReading(Reading reading, BigInteger meterId) {
 
-        ReadingResponse readingResponse = new ReadingResponse();
+        Reading saveReading = null;
 
         BigInteger id = reading.getId();
 
@@ -64,16 +58,11 @@ public class ReadingServiceImpl implements ReadingService {
 
             if (resultMeter.isPresent() && resultReading.isPresent()) {
                 reading.setMeter(resultMeter.get());
-                readingResponse.setReading(readingRepository.save(reading));
-                readingResponse.setStatus(HttpStatus.OK);
-            } else {
-                readingResponse.setStatus(HttpStatus.NOT_FOUND);
+                saveReading = readingRepository.save(reading);
             }
-        } else {
-            readingResponse.setStatus(HttpStatus.BAD_REQUEST);
         }
 
-        return readingResponse;
+        return saveReading;
     }
 
     @Override
@@ -82,9 +71,7 @@ public class ReadingServiceImpl implements ReadingService {
     }
 
     @Override
-    public AggregateReadingResponse getAggregateReadings(Integer year, BigInteger meterId) {
-
-        AggregateReadingResponse aggregateReadingResponse = new AggregateReadingResponse();
+    public AggregateReading getAggregateReadings(Integer year, BigInteger meterId) {
 
         Reading queryReading = new Reading();
         queryReading.setYear(year);
@@ -100,10 +87,9 @@ public class ReadingServiceImpl implements ReadingService {
 
         Long total = readingProcessor.process(readingList);
 
-        aggregateReadingResponse.setAggregateReading(new AggregateReading(year, total));
-        aggregateReadingResponse.setStatus(HttpStatus.OK);
+        AggregateReading aggregateReading = new AggregateReading(year, total);
 
-        return aggregateReadingResponse;
+        return aggregateReading;
 
     }
 

@@ -14,7 +14,6 @@ import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
-import typeqast.entities.response.ClientResponse;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
@@ -74,12 +73,11 @@ public class ClientServiceTest {
 
         Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        ClientResponse clientResponse = clientService.addClient(requestClient);
+        Client resultClient = clientService.addClient(requestClient);
 
-        Assert.assertNotNull(clientResponse);
-        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+        Assert.assertNotNull(resultClient);
 
-        ClientAssertions.execute(mockClient, clientResponse.getClient());
+        ClientAssertions.execute(mockClient, resultClient);
 
     }
 
@@ -96,27 +94,25 @@ public class ClientServiceTest {
 
         Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        ClientResponse clientResponse = clientService.addClient(requestClient);
+        Client resultClient = clientService.addClient(requestClient);
 
-        Assert.assertNotNull(clientResponse);
-        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+        Assert.assertNotNull(resultClient);
 
-        ClientAssertions.execute(mockClient, clientResponse.getClient());
+        ClientAssertions.execute(mockClient, resultClient);
 
         requestClient.setName("name2");
-        requestClient.setId(clientResponse.getClient().getId());
+        requestClient.setId(resultClient.getId());
 
         mockClient.setName("name2");
 
         Mockito.when(clientRepository.findOne(any())).thenReturn(Optional.of(mockClient));
         Mockito.when(clientRepository.save(requestClient)).thenReturn(mockClient);
 
-        clientResponse = clientService.updateClient(requestClient);
+        resultClient = clientService.updateClient(requestClient);
 
-        Assert.assertNotNull("client response should not be null ", clientResponse);
-        Assert.assertEquals(HttpStatus.OK, clientResponse.getStatus());
+        Assert.assertNotNull("client response should not be null ", resultClient);
 
-        ClientAssertions.execute(mockClient, clientResponse.getClient());
+        ClientAssertions.execute(mockClient, resultClient);
 
 
     }
@@ -168,12 +164,9 @@ public class ClientServiceTest {
 
         Mockito.when(clientRepository.save(any())).thenReturn(client);
 
-        ClientResponse clientResponse = clientService.addClient(client);
+        Client resultClient = clientService.addClient(client);
 
-        Assert.assertNotNull(clientResponse);
-        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
-
-        Client resultClient = clientResponse.getClient();
+        Assert.assertNotNull(resultClient);
 
         ClientAssertions.execute(client, resultClient);
 
@@ -220,12 +213,9 @@ public class ClientServiceTest {
 
         Mockito.when(clientRepository.save(any())).thenReturn(client);
 
-        ClientResponse clientResponse = clientService.addClient(client);
+        Client resultClient = clientService.addClient(client);
 
-        Assert.assertNotNull(clientResponse);
-        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
-
-        Client resultClient = clientResponse.getClient();
+        Assert.assertNotNull(resultClient);
 
         ClientAssertions.execute(client, resultClient);
 
@@ -265,12 +255,9 @@ public class ClientServiceTest {
         Mockito.when(clientRepository.findOne(any())).thenReturn(Optional.of(client));
         Mockito.when(clientRepository.save(any())).thenReturn(client);
 
-        clientResponse = clientService.updateClient(client);
+        resultClient = clientService.updateClient(client);
 
-        Assert.assertNotNull(clientResponse);
-        Assert.assertEquals(HttpStatus.OK, clientResponse.getStatus());
-
-        resultClient = clientResponse.getClient();
+        Assert.assertNotNull(resultClient);
 
         ClientAssertions.execute(client, resultClient);
 

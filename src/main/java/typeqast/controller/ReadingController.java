@@ -11,8 +11,6 @@ import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Reading;
-import typeqast.entities.response.AggregateReadingResponse;
-import typeqast.entities.response.ReadingResponse;
 import typeqast.service.ReadingService;
 
 import javax.validation.ConstraintViolationException;
@@ -35,22 +33,22 @@ public class ReadingController {
      *
      * @param reading json body
      * @param meterId id of meter
-     *
      * @return
      */
     @PostMapping(RestEndpoints.READINGS)
     public ResponseEntity<Reading> addReading(@RequestBody Reading reading, @RequestParam(name = RequestParams.METER_ID) BigInteger meterId) {
         logger.info("Received add reading request");
 
-        ReadingResponse readingResponse = readingService.addReading(reading, meterId);
+        Reading resultReading = readingService.addReading(reading, meterId);
 
-        return new ResponseEntity<>(readingResponse.getReading(), readingResponse.getStatus());
+        return new ResponseEntity<>(resultReading, HttpStatus.CREATED);
 
     }
 
 
     /**
      * Get a list of all readings
+     *
      * @return
      */
     @GetMapping(RestEndpoints.READINGS)
@@ -66,9 +64,7 @@ public class ReadingController {
      * Get aggregate readings for a year
      *
      * @param meterId optional, id for a specific meter
-     *
-     * @param year mandatory
-     *
+     * @param year    mandatory
      * @return
      */
     @GetMapping(RestEndpoints.READINGS + RestEndpoints.AGGREGATE)
@@ -76,9 +72,9 @@ public class ReadingController {
             , @RequestParam(name = RequestParams.YEAR, required = false) @Min(1900) @Max(2021) Integer year) {
         logger.info("Received get aggregate readings request");
 
-        AggregateReadingResponse aggregateReadingResponse = readingService.getAggregateReadings(year, meterId);
+        AggregateReading aggregateReadingResult = readingService.getAggregateReadings(year, meterId);
 
-        return new ResponseEntity<>(aggregateReadingResponse.getAggregateReading(), aggregateReadingResponse.getStatus());
+        return new ResponseEntity<>(aggregateReadingResult, HttpStatus.OK);
     }
 
     @ExceptionHandler(ConstraintViolationException.class)

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,7 +20,6 @@ import org.springframework.util.MultiValueMap;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Meter;
-import typeqast.entities.response.MeterResponse;
 import typeqast.service.MeterService;
 import typeqast.util.assertions.MeterAssertions;
 
@@ -56,7 +54,7 @@ public class MeterControllerTest {
 
         mockMeter.setId(BigInteger.valueOf(1));
 
-        when(mockMeterService.addMeter(any(), any())).thenReturn(new MeterResponse(mockMeter, HttpStatus.CREATED));
+        when(mockMeterService.addMeter(any(), any())).thenReturn(mockMeter);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.CLIENT_ID, String.valueOf(1));
@@ -84,7 +82,7 @@ public class MeterControllerTest {
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.CLIENT_ID, String.valueOf(1));
-        when(mockMeterService.addMeter(any(), any())).thenReturn(new MeterResponse(mockMeter, HttpStatus.CREATED));
+        when(mockMeterService.addMeter(any(), any())).thenReturn(mockMeter);
 
         RequestBuilder requestBuilder = (post(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON).params(params).content(meterAsString));
 
@@ -103,7 +101,7 @@ public class MeterControllerTest {
 
         requestBuilder = (put(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON).params(params).content(meterAsString));
 
-        when(mockMeterService.updateMeter(any(), any())).thenReturn(new MeterResponse(mockMeter, HttpStatus.OK));
+        when(mockMeterService.updateMeter(any(), any())).thenReturn(mockMeter);
 
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();

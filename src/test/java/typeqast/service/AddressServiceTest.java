@@ -10,11 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
-import typeqast.entities.response.AddressResponse;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
 import typeqast.service.impl.AddressServiceImpl;
@@ -63,11 +61,11 @@ public class AddressServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
-        AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+        Address address = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Response address object should not be null ", addressResponse);
+        Assert.assertNotNull(" address object should not be null ", address);
 
-        AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
+        AddressAssertions.execute(mockResultAddress, address);
 
     }
 
@@ -85,11 +83,11 @@ public class AddressServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
-        AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+        Address address = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Response address object should not be null ", addressResponse);
+        Assert.assertNotNull(" address object should not be null ", address);
 
-        AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
+        AddressAssertions.execute(mockResultAddress, address);
 
         mockResultAddress = new Address("country1_updated", "city1_updated", "street1_updated", 2);
         mockResultAddress.setId(BigInteger.valueOf(1));
@@ -100,11 +98,11 @@ public class AddressServiceTest {
         Mockito.when(addressRepository.findOne(any())).thenReturn(Optional.of(mockResultAddress));
         Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
-        addressResponse = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
+        address = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Response address object should not be null ", addressResponse);
+        Assert.assertNotNull(" address object should not be null ", address);
 
-        AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
+        AddressAssertions.execute(mockResultAddress, address);
 
     }
 
@@ -132,27 +130,6 @@ public class AddressServiceTest {
     }
 
     /**
-     * Add address address to a client that already has one assigned
-     */
-    @Test
-    public void addAddressAlreadyAsignedTest() {
-
-        Address requestAddress = new Address("country1", "city1", "street1", 1);
-
-        Address mockResultAddress = new Address("country1", "city1", "street1", 1);
-        mockResultAddress.setId(BigInteger.valueOf(1));
-
-        Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(addressRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
-
-        AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
-
-        Assert.assertNull("Response address object should be null ", addressResponse.getAddress());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, addressResponse.getStatus());
-
-    }
-
-    /**
      * Add address for inexistent client
      */
     @Test
@@ -165,10 +142,9 @@ public class AddressServiceTest {
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
 
-        AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+        Address address = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNull("Response address object should be null ", addressResponse.getAddress());
-        Assert.assertEquals(HttpStatus.NOT_FOUND, addressResponse.getStatus());
+        Assert.assertNull(" address object should be null ", address);
 
     }
 

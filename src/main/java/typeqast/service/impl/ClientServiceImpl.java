@@ -1,12 +1,11 @@
 package typeqast.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import typeqast.entities.Client;
-import typeqast.entities.response.ClientResponse;
 import typeqast.repository.ClientRepository;
 import typeqast.service.ClientService;
 
@@ -19,49 +18,46 @@ public class ClientServiceImpl implements ClientService {
     @Autowired
     private ClientRepository clientRepository;
 
-    @Override
-    public ClientResponse addClient(Client client) {
+    private static Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
 
-        ClientResponse clientResponse = new ClientResponse();
+    @Override
+    public Client addClient(Client client) {
+
+        logger.info("Received add new client request");
 
         Client saveClient = new Client(client.getName());
 
-        try {
-            clientResponse.setClient(clientRepository.save(saveClient));
-            clientResponse.setStatus(HttpStatus.CREATED);
-        } catch (DataIntegrityViolationException dive) {
-            clientResponse.setStatus(HttpStatus.BAD_REQUEST);
-        }
+        saveClient = clientRepository.save(saveClient);
 
-        return clientResponse;
+        logger.info("New client added");
+
+        return saveClient;
 
     }
 
     @Override
-    public ClientResponse updateClient(Client updateClient) {
+    public Client updateClient(Client updateClient) {
 
-        ClientResponse clientResponse = new ClientResponse();
+        logger.info("Received add new client request");
 
         Optional<Client> resultClient = clientRepository.findOne(Example.of(new Client(updateClient.getId())));
 
+        Client saveClient = null;
+
         if (resultClient.isPresent()) {
 
-            try {
-                Client saveClient = new Client(updateClient.getId(), updateClient.getName());
-                clientResponse.setClient(clientRepository.save(saveClient));
-                clientResponse.setStatus(HttpStatus.OK);
-            } catch (DataIntegrityViolationException dive) {
-                clientResponse.setStatus(HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            clientResponse.setStatus(HttpStatus.NOT_FOUND);
+            saveClient = new Client(updateClient.getId(), updateClient.getName());
+
+            saveClient = clientRepository.save(saveClient);
+
         }
 
-        return clientResponse;
+        return saveClient;
     }
 
     @Override
     public List<Client> getClients() {
+        logger.info("Received get clients request");
         return clientRepository.findAll();
     }
 }

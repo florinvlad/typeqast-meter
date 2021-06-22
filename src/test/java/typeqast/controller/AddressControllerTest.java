@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -21,7 +20,6 @@ import org.springframework.util.MultiValueMap;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Address;
-import typeqast.entities.response.AddressResponse;
 import typeqast.service.AddressService;
 import typeqast.util.assertions.AddressAssertions;
 
@@ -55,7 +53,7 @@ public class AddressControllerTest {
         String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
 
         mockAddress.setId(BigInteger.valueOf(1));
-        when(mockAddressService.addAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.CREATED));
+        when(mockAddressService.addAddress(any(), any())).thenReturn(mockAddress);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.CLIENT_ID, String.valueOf(1));
@@ -80,7 +78,7 @@ public class AddressControllerTest {
         String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
 
         mockAddress.setId(BigInteger.valueOf(1));
-        when(mockAddressService.addAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.CREATED));
+        when(mockAddressService.addAddress(any(), any())).thenReturn(mockAddress);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.CLIENT_ID, String.valueOf(1));
@@ -102,7 +100,7 @@ public class AddressControllerTest {
 
         requestBuilder = (put(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).content(addressAsString));
 
-        when(mockAddressService.updateAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.OK));
+        when(mockAddressService.updateAddress(any(), any())).thenReturn(mockAddress);
 
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();

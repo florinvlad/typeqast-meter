@@ -10,13 +10,11 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.business.ReadingProcessor;
 import typeqast.business.impl.AggregateReadingCalculator;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
-import typeqast.entities.response.ReadingResponse;
 import typeqast.repository.MeterRepository;
 import typeqast.repository.ReadingRepository;
 import typeqast.service.impl.ReadingServiceImpl;
@@ -81,12 +79,9 @@ public class ReadingServiceTest {
         Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Meter(BigInteger.valueOf(1))));
         Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
 
-        ReadingResponse readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
+        Reading readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result reading response should not be null ", readingResponse);
-        Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
-
-        ReadingAssertions.execute(mockResultReading, readingResponse.getReading());
+        ReadingAssertions.execute(mockResultReading, readingResponse);
 
     }
 
@@ -104,30 +99,26 @@ public class ReadingServiceTest {
         Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Meter(BigInteger.valueOf(1))));
         Mockito.when(readingRepository.save(requestReading)).thenReturn(mockResultReading);
 
-        ReadingResponse readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
+        Reading readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result reading response should not be null ", readingResponse);
-        Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
-
-        ReadingAssertions.execute(mockResultReading, readingResponse.getReading());
+        ReadingAssertions.execute(mockResultReading, readingResponse);
 
         requestReading.setYear(2002);
         requestReading.setMonth(Month.MAY);
         requestReading.setValue(2345L);
-        requestReading.setId(readingResponse.getReading().getId());
+        requestReading.setId(readingResponse.getId());
 
         Reading mockResultReading2 = new Reading(2002, Month.MAY, 2345L);
-        mockResultReading2.setId(readingResponse.getReading().getId());
+        mockResultReading2.setId(readingResponse.getId());
 
         Mockito.when(readingRepository.findOne(any())).thenReturn(Optional.of(mockResultReading));
         Mockito.when(readingRepository.save(requestReading)).thenReturn(mockResultReading2);
 
         readingResponse = readingService.updateReading(requestReading, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result reading response should not be null ", readingResponse);
-        Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
+        Assert.assertNotNull("Result reading should not be null ", readingResponse);
 
-        ReadingAssertions.execute(mockResultReading2, readingResponse.getReading());
+        ReadingAssertions.execute(mockResultReading2, readingResponse);
 
     }
 
@@ -169,11 +160,9 @@ public class ReadingServiceTest {
         Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
         Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
 
-        ReadingResponse readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
+        Reading readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result reading response should not be null ", readingResponse);
-        Assert.assertNull("Result reading should be null ", readingResponse.getReading());
-        Assert.assertEquals(HttpStatus.NOT_FOUND, readingResponse.getStatus());
+        Assert.assertNull("Result reading should be null ", readingResponse);
 
     }
 

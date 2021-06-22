@@ -1,13 +1,12 @@
 package typeqast.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
-import typeqast.entities.response.AddressResponse;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
 import typeqast.service.AddressService;
@@ -19,6 +18,8 @@ import java.util.Optional;
 @Service
 public class AddressServiceImpl implements AddressService {
 
+    private static Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
+
     @Autowired
     private AddressRepository addressRepository;
 
@@ -26,53 +27,46 @@ public class AddressServiceImpl implements AddressService {
     private ClientRepository clientRepository;
 
     @Override
-    public AddressResponse addAddress(Address address, BigInteger clientId) {
+    public Address addAddress(Address address, BigInteger clientId) {
 
-        AddressResponse addressResponse = new AddressResponse();
+        logger.info("Received add address request");
 
         Optional<Client> resultClient = clientRepository.findOne(Example.of(new Client(clientId)));
 
+        Address saveAddress = null;
+
         if (resultClient.isPresent()) {
 
-            try {
-                Address saveAddress = new Address(address.getCountry(), address.getCity(), address.getStreet(), address.getNumber());
-                saveAddress.setClient(resultClient.get());
-                addressResponse.setAddress(addressRepository.save(saveAddress));
-                addressResponse.setStatus(HttpStatus.CREATED);
-            } catch (DataIntegrityViolationException dive) {
-                addressResponse.setStatus(HttpStatus.BAD_REQUEST);
-            }
-        } else {
-            addressResponse.setStatus(HttpStatus.NOT_FOUND);
+            saveAddress = new Address(address.getCountry(), address.getCity(), address.getStreet(), address.getNumber());
+            saveAddress.setClient(resultClient.get());
+
+            saveAddress = addressRepository.save(saveAddress);
+
         }
 
-        return addressResponse;
+        return saveAddress;
     }
 
     @Override
-    public AddressResponse updateAddress(Address address, BigInteger clientId) {
+    public Address updateAddress(Address address, BigInteger clientId) {
 
         BigInteger id = address.getId();
 
-        AddressResponse addressResponse = new AddressResponse();
+        Address saveAddress = null;
 
         if (id != null) {
             Optional<Address> readAddress = addressRepository.findOne(Example.of(new Address(id)));
             Optional<Client> resultClient = clientRepository.findOne(Example.of(new Client(clientId)));
 
             if (resultClient.isPresent() && readAddress.isPresent()) {
+
                 address.setClient(resultClient.get());
-                addressResponse.setAddress(addressRepository.save(address));
-                addressResponse.setStatus(HttpStatus.OK);
-            } else {
-                addressResponse.setStatus(HttpStatus.NOT_FOUND);
+                saveAddress = addressRepository.save(address);
+
             }
-        } else {
-            addressResponse.setStatus(HttpStatus.BAD_REQUEST);
         }
 
-
-        return addressResponse;
+        return saveAddress;
     }
 
     @Override

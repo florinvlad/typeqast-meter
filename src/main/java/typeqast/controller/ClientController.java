@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Client;
-import typeqast.entities.response.ClientResponse;
 import typeqast.service.ClientService;
 
 import javax.validation.ConstraintViolationException;
@@ -26,7 +25,6 @@ public class ClientController {
      * Add new client
      *
      * @param client request body as json
-     *
      * @return
      */
     @PostMapping(RestEndpoints.CLIENTS)
@@ -34,17 +32,15 @@ public class ClientController {
 
         logger.info("Received create client request");
 
-        ClientResponse clientResponse = clientService.addClient(client);
+        Client resultClient = clientService.addClient(client);
 
-        return new ResponseEntity<>(clientResponse.getClient(), clientResponse.getStatus());
-
+        return new ResponseEntity<>(resultClient, HttpStatus.CREATED);
     }
 
     /**
      * Update existing client
      *
      * @param client json body
-     *
      * @return
      */
     @PutMapping(RestEndpoints.CLIENTS)
@@ -52,16 +48,22 @@ public class ClientController {
 
         logger.info("Received update client request");
 
-        ClientResponse clientResponse = clientService.updateClient(client);
+        Client resultClient = clientService.updateClient(client);
 
-        return new ResponseEntity<>(clientResponse.getClient(), clientResponse.getStatus());
+        if (resultClient != null) {
+            return new ResponseEntity<>(resultClient, HttpStatus.OK);
+
+        } else {
+            return new ResponseEntity<>(resultClient, HttpStatus.NOT_FOUND);
+        }
+
 
     }
 
     /**
      * Get a list of all clients
      *
-      * @return
+     * @return
      */
     @GetMapping(RestEndpoints.CLIENTS)
     public ResponseEntity<List<Client>> getClients() {

@@ -3,6 +3,7 @@ package typeqast.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -10,10 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Meter;
-import typeqast.entities.response.MeterResponse;
 import typeqast.service.MeterService;
 
-import javax.validation.ConstraintViolationException;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -37,9 +36,14 @@ public class MeterController {
     @PostMapping(RestEndpoints.METERS)
     public ResponseEntity<Meter> addMeter(@RequestBody Meter meter, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId) {
 
-        MeterResponse meterResponse = meterService.addMeter(meter, clientId);
+        Meter resultMeter = meterService.addMeter(meter, clientId);
 
-        return new ResponseEntity<>(meterResponse.getMeter(), meterResponse.getStatus());
+        if (resultMeter != null) {
+            return new ResponseEntity<>(resultMeter, HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>(resultMeter, HttpStatus.NOT_FOUND);
+        }
+
     }
 
 
@@ -52,9 +56,13 @@ public class MeterController {
     @PutMapping(RestEndpoints.METERS)
     public ResponseEntity<Meter> updateMeter(@RequestBody Meter meter, @RequestParam(RequestParams.CLIENT_ID) BigInteger clientId) {
 
-        MeterResponse meterResponse = meterService.updateMeter(meter, clientId);
+        Meter resultMeter = meterService.updateMeter(meter, clientId);
 
-        return new ResponseEntity<>(meterResponse.getMeter(), meterResponse.getStatus());
+        if (resultMeter != null) {
+            return new ResponseEntity<>(resultMeter, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(resultMeter, HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
@@ -72,7 +80,7 @@ public class MeterController {
         return new ResponseEntity<>(meters, HttpStatus.OK);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
+    @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<String> onValidationError(Exception ex) {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }

@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -18,7 +17,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Client;
-import typeqast.entities.response.ClientResponse;
 import typeqast.service.AddressService;
 import typeqast.service.ClientService;
 import typeqast.service.MeterService;
@@ -93,7 +91,7 @@ public class ClientControllerTest {
         String clientAsString = new ObjectMapper().writeValueAsString(mockClient);
 
         mockClient.setId(BigInteger.valueOf(1));
-        when(mockClientService.addClient(any())).thenReturn(new ClientResponse(mockClient, HttpStatus.CREATED));
+        when(mockClientService.addClient(any())).thenReturn(mockClient);
 
         RequestBuilder requestBuilder = (post(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON).content(clientAsString));
 
@@ -117,7 +115,7 @@ public class ClientControllerTest {
 
         String clientAsString = new ObjectMapper().writeValueAsString(mockClient);
 
-        when(mockClientService.addClient(any())).thenReturn(new ClientResponse(mockClient, HttpStatus.CREATED));
+        when(mockClientService.addClient(any())).thenReturn(mockClient);
 
         RequestBuilder requestBuilder = (post(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON).content(clientAsString));
 
@@ -137,7 +135,7 @@ public class ClientControllerTest {
 
         requestBuilder = (put(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON).content(clientAsString));
 
-        when(mockClientService.updateClient(any())).thenReturn(new ClientResponse(mockClient, HttpStatus.OK));
+        when(mockClientService.updateClient(any())).thenReturn(mockClient);
 
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();

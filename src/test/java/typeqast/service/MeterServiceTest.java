@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
-import typeqast.entities.response.MeterResponse;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
 import typeqast.service.impl.MeterServiceImpl;
@@ -63,12 +62,11 @@ public class MeterServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter);
 
-        MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        Meter meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
 
         Assert.assertNotNull("Result meter response should not be null ", meterResponse);
-        Assert.assertEquals(HttpStatus.CREATED, meterResponse.getStatus());
 
-        MeterAssertions.execute(mockResultMeter, meterResponse.getMeter());
+        MeterAssertions.execute(mockResultMeter, meterResponse);
 
     }
 
@@ -86,17 +84,17 @@ public class MeterServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter);
 
-        MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        Meter meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
 
         Assert.assertNotNull("Result meter response should not be null ", meterResponse);
 
-        MeterAssertions.execute(mockResultMeter, meterResponse.getMeter());
+        MeterAssertions.execute(mockResultMeter, meterResponse);
 
         requestMeter.setName("meter1_updated");
-        requestMeter.setId(meterResponse.getMeter().getId());
+        requestMeter.setId(meterResponse.getId());
 
         Meter mockResultMeter2 = new Meter("meter1_updated");
-        mockResultMeter2.setId(meterResponse.getMeter().getId());
+        mockResultMeter2.setId(meterResponse.getId());
 
         Mockito.when(meterRepository.findOne(any())).thenReturn(Optional.of(mockResultMeter));
         Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter2);
@@ -105,7 +103,7 @@ public class MeterServiceTest {
 
         Assert.assertNotNull("Result meter response should not be null ", meterResponse);
 
-        MeterAssertions.execute(mockResultMeter2, meterResponse.getMeter());
+        MeterAssertions.execute(mockResultMeter2, meterResponse);
 
     }
 
@@ -133,27 +131,6 @@ public class MeterServiceTest {
     }
 
     /**
-     * Add meter to a client that already has a meter installed
-     */
-    @Test
-    public void addMeterAlreadyAsignedTest() {
-
-        Meter requestMeter = new Meter("meter1");
-
-        Meter mockResultMeter = new Meter("meter1");
-        mockResultMeter.setId(BigInteger.valueOf(1));
-
-        Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(meterRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
-
-        MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
-
-        Assert.assertNull("Result meter response should be null ", meterResponse.getMeter());
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, meterResponse.getStatus());
-
-    }
-
-    /**
      * Add meter to a client that does not exist
      */
     @Test
@@ -167,10 +144,9 @@ public class MeterServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
         Mockito.when(meterRepository.save(requestMeter)).thenThrow(DataIntegrityViolationException.class);
 
-        MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        Meter meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
 
-        Assert.assertNull("Result meter response should be null ", meterResponse.getMeter());
-        Assert.assertEquals(HttpStatus.NOT_FOUND, meterResponse.getStatus());
+        Assert.assertNull("Result meter response should be null ", meterResponse);
 
     }
 
