@@ -1,6 +1,5 @@
 package typeqast.service;
 
-import typeqast.entities.AggregateReading;
 import typeqast.entities.Reading;
 
 import java.math.BigInteger;
@@ -13,7 +12,5 @@ public interface ReadingService {
     Reading updateReading(Reading reading, BigInteger meterId);
 
     List<Reading> getReadings();
-
-    AggregateReading getAggregateReadings(Integer year, BigInteger meterId);
 
 }

@@ -10,9 +10,12 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
+import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
 import typeqast.service.MeterService;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -78,6 +81,23 @@ public class MeterController {
         List<Meter> meters = meterService.getMeters(meterId);
 
         return new ResponseEntity<>(meters, HttpStatus.OK);
+    }
+
+    /**
+     * Get aggregate readings for a year
+     *
+     * @param meterId optional, id for a specific meter
+     * @param year    mandatory
+     * @return
+     */
+    @GetMapping(RestEndpoints.METERS + RestEndpoints.AGGREGATE)
+    public ResponseEntity<AggregateReading> getAggregateReading(@RequestParam(name = RequestParams.METER_ID) BigInteger meterId
+            , @RequestParam(name = RequestParams.YEAR, required = false) @Min(1900) @Max(2021) Integer year) {
+        logger.info("Received get aggregate readings request");
+
+        AggregateReading aggregateReadingResult = meterService.getAggregateReadings(year, meterId);
+
+        return new ResponseEntity<>(aggregateReadingResult, HttpStatus.OK);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)

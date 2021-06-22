@@ -19,7 +19,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
-import typeqast.entities.AggregateReading;
 import typeqast.entities.Reading;
 import typeqast.service.ReadingService;
 import typeqast.util.assertions.ReadingAssertions;
@@ -108,46 +107,6 @@ public class ReadingControllerTest {
         Assert.assertNotNull(responseReadingList);
         Assert.assertEquals(2, responseReadingList.size());
 
-
-    }
-
-    @Test
-    public void aggregateReadingTest() throws Exception {
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(RequestParams.YEAR, String.valueOf(2020));
-
-        RequestBuilder requestBuilder = (get(RestEndpoints.READINGS + RestEndpoints.AGGREGATE).contentType(MediaType.APPLICATION_JSON).params(params));
-
-        Reading mockResultReading = new Reading(2020, Month.APRIL, 1234L);
-        mockResultReading.setId(BigInteger.valueOf(1));
-
-        List<Reading> readingList = new ArrayList<>();
-        readingList.add(mockResultReading);
-
-        mockResultReading = new Reading(2020, Month.JUNE, 1111L);
-        mockResultReading.setId(BigInteger.valueOf(2));
-
-        readingList.add(mockResultReading);
-
-        AggregateReading aggregateReadingResponse = new AggregateReading(2020, 1234L);
-
-        given(mockReadingService.getAggregateReadings(any(), any())).willReturn(aggregateReadingResponse);
-
-        MvcResult result = mvc.perform(requestBuilder)
-                .andExpect(status().isOk()).andReturn();
-
-        Assert.assertNotNull(result.getResponse());
-
-        String responseBodyString = result.getResponse().getContentAsString();
-
-        Assert.assertNotNull(responseBodyString);
-
-        AggregateReading responseAggregateReading = new ObjectMapper().readValue(responseBodyString, AggregateReading.class);
-
-        Assert.assertNotNull(responseAggregateReading);
-        Assert.assertEquals(aggregateReadingResponse.getTotal(), responseAggregateReading.getTotal());
-        Assert.assertEquals(mockResultReading.getYear(), responseAggregateReading.getYear());
 
     }
 

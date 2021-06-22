@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
@@ -61,7 +60,7 @@ public class ClientServiceTest {
     private ReadingRepository readingRepository;
 
     /**
-     * Unit test for {@link ClientServiceImpl} addClient()
+     * Unit test for {@link ClientServiceImpl#addClient(Client)}
      */
     @Test
     public void addClientTest() {
@@ -82,7 +81,7 @@ public class ClientServiceTest {
     }
 
     /**
-     * Unit test for {@link ClientServiceImpl} updateClient()
+     * Unit test for {@link ClientServiceImpl#updateClient(Client)}
      */
     @Test
     public void updateClientTest() {
@@ -118,7 +117,7 @@ public class ClientServiceTest {
     }
 
     /**
-     * Unit test for {@link ClientServiceImpl} @getClients()
+     * Unit test for {@link ClientServiceImpl#getClients()}
      */
 
     @Test

@@ -19,11 +19,14 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
+import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
+import typeqast.entities.Reading;
 import typeqast.service.MeterService;
 import typeqast.util.assertions.MeterAssertions;
 
 import java.math.BigInteger;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,7 +70,7 @@ public class MeterControllerTest {
 
         Meter responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
 
-        MeterAssertions.execute(mockMeter,responseMeter);
+        MeterAssertions.execute(mockMeter, responseMeter);
 
     }
 
@@ -93,7 +96,7 @@ public class MeterControllerTest {
 
         Meter responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
 
-        MeterAssertions.execute(mockMeter,responseMeter);
+        MeterAssertions.execute(mockMeter, responseMeter);
 
         mockMeter.setName("meter1_updated");
 
@@ -110,7 +113,7 @@ public class MeterControllerTest {
 
         responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
 
-        MeterAssertions.execute(mockMeter,responseMeter);
+        MeterAssertions.execute(mockMeter, responseMeter);
 
     }
 
@@ -143,6 +146,50 @@ public class MeterControllerTest {
         Assert.assertNotNull(responseMeterList);
         Assert.assertEquals(2, responseMeterList.size());
 
+
+    }
+
+
+    @Test
+    public void aggregateReadingTest() throws Exception {
+
+        Meter meter = new Meter("test_meter");
+        meter.setId(BigInteger.valueOf(1));
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(RequestParams.YEAR, String.valueOf(2020));
+        params.add(RequestParams.METER_ID, String.valueOf(1));
+
+        RequestBuilder requestBuilder = (get(RestEndpoints.METERS + RestEndpoints.AGGREGATE).contentType(MediaType.APPLICATION_JSON).params(params));
+
+        Reading mockResultReading = new Reading(2020, Month.APRIL, 1234L);
+        mockResultReading.setId(BigInteger.valueOf(1));
+
+        meter.addReading(mockResultReading);
+
+        mockResultReading = new Reading(2020, Month.JUNE, 1111L);
+        mockResultReading.setId(BigInteger.valueOf(2));
+
+        meter.addReading(mockResultReading);
+
+        AggregateReading aggregateReadingResponse = new AggregateReading(2020, 1234L);
+
+        given(mockMeterService.getAggregateReadings(any(), any())).willReturn(aggregateReadingResponse);
+
+        MvcResult result = mvc.perform(requestBuilder)
+                .andExpect(status().isOk()).andReturn();
+
+        Assert.assertNotNull(result.getResponse());
+
+        String responseBodyString = result.getResponse().getContentAsString();
+
+        Assert.assertNotNull(responseBodyString);
+
+        AggregateReading responseAggregateReading = new ObjectMapper().readValue(responseBodyString, AggregateReading.class);
+
+        Assert.assertNotNull(responseAggregateReading);
+        Assert.assertEquals(aggregateReadingResponse.getTotal(), responseAggregateReading.getTotal());
+        Assert.assertEquals(mockResultReading.getYear(), responseAggregateReading.getYear());
 
     }
 

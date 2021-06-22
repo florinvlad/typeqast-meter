@@ -1,11 +1,10 @@
 package typeqast.service.impl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import typeqast.business.ReadingProcessor;
-import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.repository.MeterRepository;
@@ -19,18 +18,18 @@ import java.util.Optional;
 @Service
 public class ReadingServiceImpl implements ReadingService {
 
+    private static Logger logger = LoggerFactory.getLogger(ReadingServiceImpl.class);
+
     @Autowired
     private ReadingRepository readingRepository;
 
     @Autowired
     private MeterRepository meterRepository;
 
-    @Autowired
-    @Qualifier("aggregateReading")
-    private ReadingProcessor readingProcessor;
-
     @Override
     public Reading addReading(Reading reading, BigInteger meterId) {
+
+        logger.info("Received add reading request");
 
         Reading saveReading = null;
 
@@ -47,6 +46,8 @@ public class ReadingServiceImpl implements ReadingService {
 
     @Override
     public Reading updateReading(Reading reading, BigInteger meterId) {
+
+        logger.info("Received update reading request");
 
         Reading saveReading = null;
 
@@ -67,30 +68,8 @@ public class ReadingServiceImpl implements ReadingService {
 
     @Override
     public List<Reading> getReadings() {
+        logger.info("Received get readings request");
         return readingRepository.findAll();
-    }
-
-    @Override
-    public AggregateReading getAggregateReadings(Integer year, BigInteger meterId) {
-
-        Reading queryReading = new Reading();
-        queryReading.setYear(year);
-
-        if (meterId != null) {
-            Optional<Meter> meterResult = meterRepository.findOne(Example.of(new Meter(meterId)));
-            if (meterResult.isPresent()) {
-                queryReading.setMeter(meterResult.get());
-            }
-        }
-
-        List<Reading> readingList = readingRepository.findAll(Example.of(queryReading));
-
-        Long total = readingProcessor.process(readingList);
-
-        AggregateReading aggregateReading = new AggregateReading(year, total);
-
-        return aggregateReading;
-
     }
 
 }

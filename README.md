@@ -118,12 +118,12 @@ available methods:
          "value": 1
          }
 
-###/readings/aggregate
+###/meters/aggregate
 
 available methods:
 
     GET returns the aggregate value of meter readings for that year
-         request parameters: year (mandatory) , meter_id (optional)
+         request parameters: year (mandatory) , meter_id (mandatory)
 
 You can download a collection of postman requests at the following URL:
 https://www.getpostman.com/collections/c0a9f011c1bc405102eb

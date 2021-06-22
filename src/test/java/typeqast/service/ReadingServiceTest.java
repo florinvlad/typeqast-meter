@@ -5,14 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
-import typeqast.business.ReadingProcessor;
-import typeqast.business.impl.AggregateReadingCalculator;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.repository.MeterRepository;
@@ -41,23 +38,8 @@ public class ReadingServiceTest {
 
     }
 
-    @TestConfiguration
-    static class ReadingProcessorTestContextConfiguration {
-
-        @Bean
-        public ReadingProcessor readingProcessor() {
-            return new AggregateReadingCalculator();
-        }
-
-    }
-
-
     @Autowired
     private ReadingService readingService;
-
-    @Autowired
-    @Qualifier("aggregateReading")
-    private ReadingProcessor readingProcessor;
 
     @MockBean
     private ReadingRepository readingRepository;
@@ -66,7 +48,7 @@ public class ReadingServiceTest {
     private MeterRepository meterRepository;
 
     /**
-     * Add reading unit test for {@link ReadingServiceImpl}
+     * Add reading unit test for {@link ReadingServiceImpl#addReading(Reading, BigInteger)}
      */
     @Test
     public void addReadingTest() {
@@ -86,7 +68,7 @@ public class ReadingServiceTest {
     }
 
     /**
-     * Update reading unit test for {@link ReadingServiceImpl}
+     * Update reading unit test for {@link ReadingServiceImpl#updateReading(Reading, BigInteger)}
      */
     @Test
     public void updateReadingTest() {
@@ -123,7 +105,7 @@ public class ReadingServiceTest {
     }
 
     /**
-     * Get readinges unit test for {@link ReadingServiceImpl}
+     * Get readinges unit test for {@link ReadingServiceImpl#getReadings()}
      */
 
     @Test
@@ -165,6 +147,8 @@ public class ReadingServiceTest {
         Assert.assertNull("Result reading should be null ", readingResponse);
 
     }
+
+
 
 }
 

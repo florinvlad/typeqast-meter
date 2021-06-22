@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
@@ -48,7 +47,9 @@ public class AddressServiceTest {
     private ClientRepository clientRepository;
 
     /**
-     * Add address unit test for {@link AddressServiceImpl}
+     *
+     * Add address unit test for {@link AddressServiceImpl#addAddress(Address, BigInteger)}
+     * 
      */
     @Test
     public void addAddressTest() {
@@ -70,7 +71,9 @@ public class AddressServiceTest {
     }
 
     /**
-     * Update address unit test for {@link AddressServiceImpl}
+     *
+     * Update address unit test for {@link AddressServiceImpl#updateAddress(Address, BigInteger)}
+     *
      */
     @Test
     public void updateAddressTest() {
@@ -107,7 +110,9 @@ public class AddressServiceTest {
     }
 
     /**
-     * Get addresses unit test for {@link AddressServiceImpl}
+     * 
+     * Get addresses unit test for {@link AddressServiceImpl#getAddresses(BigInteger)}
+     * 
      */
 
     @Test

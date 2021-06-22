@@ -1,5 +1,6 @@
 package typeqast.service;
 
+import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
 
 import java.math.BigInteger;
@@ -12,5 +13,8 @@ public interface MeterService {
     Meter updateMeter(Meter meter, BigInteger clientId);
 
     List<Meter> getMeters(BigInteger meterId);
+
+    AggregateReading getAggregateReadings(Integer year, BigInteger meterId);
+
 
 }

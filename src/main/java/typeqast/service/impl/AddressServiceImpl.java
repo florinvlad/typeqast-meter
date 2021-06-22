@@ -18,7 +18,7 @@ import java.util.Optional;
 @Service
 public class AddressServiceImpl implements AddressService {
 
-    private static Logger logger = LoggerFactory.getLogger(ClientServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(AddressServiceImpl.class);
 
     @Autowired
     private AddressRepository addressRepository;

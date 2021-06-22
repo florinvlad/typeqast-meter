@@ -60,23 +60,6 @@ public class ReadingController {
         return new ResponseEntity<>(readings, HttpStatus.OK);
     }
 
-    /**
-     * Get aggregate readings for a year
-     *
-     * @param meterId optional, id for a specific meter
-     * @param year    mandatory
-     * @return
-     */
-    @GetMapping(RestEndpoints.READINGS + RestEndpoints.AGGREGATE)
-    public ResponseEntity<AggregateReading> getAggregateReading(@RequestParam(name = RequestParams.METER_ID, required = false) BigInteger meterId
-            , @RequestParam(name = RequestParams.YEAR, required = false) @Min(1900) @Max(2021) Integer year) {
-        logger.info("Received get aggregate readings request");
-
-        AggregateReading aggregateReadingResult = readingService.getAggregateReadings(year, meterId);
-
-        return new ResponseEntity<>(aggregateReadingResult, HttpStatus.OK);
-    }
-
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<String> onValidationError(Exception ex) {
         return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
