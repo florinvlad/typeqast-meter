@@ -90,6 +90,10 @@ public class AddressServiceTest {
         AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
 
         mockResultAddress = new Address("country1_updated", "city1_updated", "street1_updated", 2);
+        mockResultAddress.setId(BigInteger.valueOf(1));
+
+        requestAddress.setId(mockResultAddress.getId());
+
 
         Mockito.when(addressRepository.findOne(any())).thenReturn(Optional.of(mockResultAddress));
         Mockito.when(addressRepository.save(requestAddress)).thenReturn(mockResultAddress);
