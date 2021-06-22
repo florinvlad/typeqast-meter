@@ -33,8 +33,9 @@ public class MeterServiceImpl implements MeterService {
 
         if (resultClient.isPresent()) {
             try {
-                meter.setClient(resultClient.get());
-                meterResponse.setMeter(meterRepository.save(meter));
+                Meter saveMeter = new Meter(meter.getName());
+                saveMeter.setClient(resultClient.get());
+                meterResponse.setMeter(meterRepository.save(saveMeter));
                 meterResponse.setStatus(HttpStatus.CREATED);
             } catch (DataIntegrityViolationException dive) {
                 meterResponse.setStatus(HttpStatus.BAD_REQUEST);

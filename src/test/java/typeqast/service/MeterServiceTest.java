@@ -61,7 +61,7 @@ public class MeterServiceTest {
         mockResultMeter.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(meterRepository.save(requestMeter)).thenReturn(mockResultMeter);
+        Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter);
 
         MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
 
@@ -84,7 +84,7 @@ public class MeterServiceTest {
         mockResultMeter.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(meterRepository.save(requestMeter)).thenReturn(mockResultMeter);
+        Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter);
 
         MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
 
@@ -99,7 +99,7 @@ public class MeterServiceTest {
         mockResultMeter2.setId(meterResponse.getMeter().getId());
 
         Mockito.when(meterRepository.findOne(any())).thenReturn(Optional.of(mockResultMeter));
-        Mockito.when(meterRepository.save(requestMeter)).thenReturn(mockResultMeter2);
+        Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter2);
 
         meterResponse = meterService.updateMeter(requestMeter, BigInteger.valueOf(1));
 
@@ -144,7 +144,7 @@ public class MeterServiceTest {
         mockResultMeter.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(meterRepository.save(requestMeter)).thenThrow(DataIntegrityViolationException.class);
+        Mockito.when(meterRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
 

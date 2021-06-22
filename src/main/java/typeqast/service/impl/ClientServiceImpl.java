@@ -24,8 +24,10 @@ public class ClientServiceImpl implements ClientService {
 
         ClientResponse clientResponse = new ClientResponse();
 
+        Client saveClient = new Client(client.getName());
+
         try {
-            clientResponse.setClient(clientRepository.save(client));
+            clientResponse.setClient(clientRepository.save(saveClient));
             clientResponse.setStatus(HttpStatus.CREATED);
         } catch (DataIntegrityViolationException dive) {
             clientResponse.setStatus(HttpStatus.BAD_REQUEST);
@@ -45,7 +47,8 @@ public class ClientServiceImpl implements ClientService {
         if (resultClient.isPresent()) {
 
             try {
-                clientResponse.setClient(clientRepository.save(updateClient));
+                Client saveClient = new Client(updateClient.getId(), updateClient.getName());
+                clientResponse.setClient(clientRepository.save(saveClient));
                 clientResponse.setStatus(HttpStatus.OK);
             } catch (DataIntegrityViolationException dive) {
                 clientResponse.setStatus(HttpStatus.BAD_REQUEST);

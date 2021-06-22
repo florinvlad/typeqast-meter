@@ -61,7 +61,7 @@ public class AddressServiceTest {
         mockResultAddress.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(addressRepository.save(requestAddress)).thenReturn(mockResultAddress);
+        Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
         AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
@@ -83,7 +83,7 @@ public class AddressServiceTest {
         mockResultAddress.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(addressRepository.save(requestAddress)).thenReturn(mockResultAddress);
+        Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
         AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
@@ -98,7 +98,7 @@ public class AddressServiceTest {
 
 
         Mockito.when(addressRepository.findOne(any())).thenReturn(Optional.of(mockResultAddress));
-        Mockito.when(addressRepository.save(requestAddress)).thenReturn(mockResultAddress);
+        Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
         addressResponse = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
 
@@ -143,7 +143,7 @@ public class AddressServiceTest {
         mockResultAddress.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
-        Mockito.when(addressRepository.save(requestAddress)).thenThrow(DataIntegrityViolationException.class);
+        Mockito.when(addressRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 

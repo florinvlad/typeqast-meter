@@ -72,7 +72,7 @@ public class ClientServiceTest {
         Client mockClient = new Client("name1");
         mockClient.setId(BigInteger.valueOf(1));
 
-        Mockito.when(clientRepository.save(requestClient)).thenReturn(mockClient);
+        Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
         ClientResponse clientResponse = clientService.addClient(requestClient);
 
@@ -94,7 +94,7 @@ public class ClientServiceTest {
         Client mockClient = new Client("name1");
         mockClient.setId(BigInteger.valueOf(1));
 
-        Mockito.when(clientRepository.save(requestClient)).thenReturn(mockClient);
+        Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
         ClientResponse clientResponse = clientService.addClient(requestClient);
 
@@ -292,7 +292,6 @@ public class ClientServiceTest {
         ReadingAssertions.execute(reading, resultReading);
 
     }
-
 
 
 }

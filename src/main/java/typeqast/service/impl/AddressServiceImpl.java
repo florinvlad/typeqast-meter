@@ -35,8 +35,9 @@ public class AddressServiceImpl implements AddressService {
         if (resultClient.isPresent()) {
 
             try {
-                address.setClient(resultClient.get());
-                addressResponse.setAddress(addressRepository.save(address));
+                Address saveAddress = new Address(address.getCountry(), address.getCity(), address.getStreet(), address.getNumber());
+                saveAddress.setClient(resultClient.get());
+                addressResponse.setAddress(addressRepository.save(saveAddress));
                 addressResponse.setStatus(HttpStatus.CREATED);
             } catch (DataIntegrityViolationException dive) {
                 addressResponse.setStatus(HttpStatus.BAD_REQUEST);
