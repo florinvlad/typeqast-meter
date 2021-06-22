@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.business.ReadingProcessor;
 import typeqast.business.impl.AggregateReadingCalculator;
@@ -41,6 +42,7 @@ public class ReadingServiceTest {
         }
 
     }
+
     @TestConfiguration
     static class ReadingProcessorTestContextConfiguration {
 
@@ -84,7 +86,7 @@ public class ReadingServiceTest {
         Assert.assertNotNull("Result reading response should not be null ", readingResponse);
         Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
 
-        ReadingAssertions.execute(mockResultReading,readingResponse.getReading());
+        ReadingAssertions.execute(mockResultReading, readingResponse.getReading());
 
     }
 
@@ -107,7 +109,7 @@ public class ReadingServiceTest {
         Assert.assertNotNull("Result reading response should not be null ", readingResponse);
         Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
 
-        ReadingAssertions.execute(mockResultReading,readingResponse.getReading());
+        ReadingAssertions.execute(mockResultReading, readingResponse.getReading());
 
         requestReading.setYear(2002);
         requestReading.setMonth(Month.MAY);
@@ -125,7 +127,7 @@ public class ReadingServiceTest {
         Assert.assertNotNull("Result reading response should not be null ", readingResponse);
         Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
 
-        ReadingAssertions.execute(mockResultReading2,readingResponse.getReading());
+        ReadingAssertions.execute(mockResultReading2, readingResponse.getReading());
 
     }
 
@@ -151,6 +153,27 @@ public class ReadingServiceTest {
         Assert.assertNotNull(resultReadingList);
         Assert.assertEquals(2, resultReadingList.size());
 
+    }
+
+    /**
+     * Add reading for inexistent meter
+     */
+    @Test
+    public void addReadingInexistentMeterTest() {
+
+        Reading requestReading = new Reading(2001, Month.APRIL, 1234L);
+
+        Reading mockResultReading = new Reading(2001, Month.APRIL, 1234L);
+        mockResultReading.setId(BigInteger.valueOf(1));
+
+        Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
+        Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
+
+        ReadingResponse readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
+
+        Assert.assertNotNull("Result reading response should not be null ", readingResponse);
+        Assert.assertNull("Result reading should be null ", readingResponse.getReading());
+        Assert.assertEquals(HttpStatus.NOT_FOUND, readingResponse.getStatus());
 
     }
 

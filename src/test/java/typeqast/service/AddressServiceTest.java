@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
@@ -126,6 +128,47 @@ public class AddressServiceTest {
         Assert.assertNotNull(resultAddressList);
         Assert.assertEquals(resultAddressList.size(), 2);
 
+
+    }
+
+    /**
+     * Add address address to a client that already has one assigned
+     */
+    @Test
+    public void addAddressAlreadyAsignedTest() {
+
+        Address requestAddress = new Address("country1", "city1", "street1", 1);
+
+        Address mockResultAddress = new Address("country1", "city1", "street1", 1);
+        mockResultAddress.setId(BigInteger.valueOf(1));
+
+        Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
+        Mockito.when(addressRepository.save(requestAddress)).thenThrow(DataIntegrityViolationException.class);
+
+        AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+
+        Assert.assertNull("Response address object should be null ", addressResponse.getAddress());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, addressResponse.getStatus());
+
+    }
+
+    /**
+     * Add address for inexistent client
+     */
+    @Test
+    public void addAddressInexistentClientTest() {
+
+        Address requestAddress = new Address("country1", "city1", "street1", 1);
+
+        Address mockResultAddress = new Address("country1", "city1", "street1", 1);
+        mockResultAddress.setId(BigInteger.valueOf(1));
+
+        Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
+
+        AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+
+        Assert.assertNull("Response address object should be null ", addressResponse.getAddress());
+        Assert.assertEquals(HttpStatus.NOT_FOUND, addressResponse.getStatus());
 
     }
 

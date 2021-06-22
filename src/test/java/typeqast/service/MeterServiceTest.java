@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -111,7 +112,6 @@ public class MeterServiceTest {
     /**
      * Get meteres unit test for {@link MeterServiceImpl}
      */
-
     @Test
     public void getMetersTest() {
 
@@ -130,6 +130,47 @@ public class MeterServiceTest {
         Assert.assertNotNull(resultMeterList);
         Assert.assertEquals(2, resultMeterList.size());
 
+    }
+
+    /**
+     * Add meter to a client that already has a meter installed
+     */
+    @Test
+    public void addMeterAlreadyAsignedTest() {
+
+        Meter requestMeter = new Meter("meter1");
+
+        Meter mockResultMeter = new Meter("meter1");
+        mockResultMeter.setId(BigInteger.valueOf(1));
+
+        Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
+        Mockito.when(meterRepository.save(requestMeter)).thenThrow(DataIntegrityViolationException.class);
+
+        MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+
+        Assert.assertNull("Result meter response should be null ", meterResponse.getMeter());
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, meterResponse.getStatus());
+
+    }
+
+    /**
+     * Add meter to a client that does not exist
+     */
+    @Test
+    public void addMeterInexistentClientTest() {
+
+        Meter requestMeter = new Meter("meter1");
+
+        Meter mockResultMeter = new Meter("meter1");
+        mockResultMeter.setId(BigInteger.valueOf(1));
+
+        Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
+        Mockito.when(meterRepository.save(requestMeter)).thenThrow(DataIntegrityViolationException.class);
+
+        MeterResponse meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+
+        Assert.assertNull("Result meter response should be null ", meterResponse.getMeter());
+        Assert.assertEquals(HttpStatus.NOT_FOUND, meterResponse.getStatus());
 
     }
 

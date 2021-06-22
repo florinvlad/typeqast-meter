@@ -46,7 +46,7 @@ public class ClientServiceImpl implements ClientService {
 
             try {
                 clientResponse.setClient(clientRepository.save(updateClient));
-                clientResponse.setStatus(HttpStatus.CREATED);
+                clientResponse.setStatus(HttpStatus.OK);
             } catch (DataIntegrityViolationException dive) {
                 clientResponse.setStatus(HttpStatus.BAD_REQUEST);
             }
