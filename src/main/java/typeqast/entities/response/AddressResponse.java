@@ -3,8 +3,8 @@ package typeqast.entities.response;
 import org.springframework.http.HttpStatus;
 import typeqast.entities.Address;
 
-/*
-Wrapper object for Address
+/**
+ * Wrapper object for {@link Address}
  */
 public class AddressResponse {
 

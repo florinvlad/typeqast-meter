@@ -3,8 +3,8 @@ package typeqast.entities.response;
 import org.springframework.http.HttpStatus;
 import typeqast.entities.Reading;
 
-/*
-Wrapper object for {@link Reading}
+/**
+ * Wrapper object for {@link Reading}
  */
 public class ReadingResponse {
 

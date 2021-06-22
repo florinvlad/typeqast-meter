@@ -10,6 +10,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.util.assertions.ReadingAssertions;
 
 import java.time.Month;
 import java.util.List;
@@ -41,10 +42,7 @@ public class ReadingRepositoryTest {
 
         Reading resultReading = readingRepository.save(reading);
 
-        Assert.assertNotNull(resultReading.getId());
-        Assert.assertEquals(reading.getYear(), resultReading.getYear());
-        Assert.assertEquals(reading.getMonth(), resultReading.getMonth());
-        Assert.assertEquals(reading.getValue(), resultReading.getValue());
+        ReadingAssertions.execute(reading, resultReading);
 
     }
 
@@ -58,28 +56,20 @@ public class ReadingRepositoryTest {
 
         Reading resultReading = readingRepository.save(reading);
 
-        Assert.assertNotNull(resultReading.getId());
-        Assert.assertEquals(reading.getYear(), resultReading.getYear());
-        Assert.assertEquals(reading.getMonth(), resultReading.getMonth());
-        Assert.assertEquals(reading.getValue(), resultReading.getValue());
+        ReadingAssertions.execute(reading, resultReading);
 
         reading = new Reading(2001, Month.MAY, 2345L);
         reading.setMeter(testMeter);
 
         resultReading = readingRepository.save(reading);
 
-        Assert.assertNotNull(resultReading.getId());
-        Assert.assertEquals(reading.getYear(), resultReading.getYear());
-        Assert.assertEquals(reading.getMonth(), resultReading.getMonth());
-        Assert.assertEquals(reading.getValue(), resultReading.getValue());
+        ReadingAssertions.execute(reading, resultReading);
 
         Optional<Reading> resultReading2 = readingRepository.findOne(Example.of(reading));
 
         Assert.assertTrue(resultReading2.isPresent());
-        Assert.assertNotNull(resultReading.getId());
-        Assert.assertEquals(reading.getYear(), resultReading.getYear());
-        Assert.assertEquals(reading.getMonth(), resultReading.getMonth());
-        Assert.assertEquals(reading.getValue(), resultReading.getValue());
+
+        ReadingAssertions.execute(reading, resultReading2.get());
     }
 
     @Test
@@ -92,22 +82,14 @@ public class ReadingRepositoryTest {
 
         Reading resultReading = readingRepository.save(reading);
 
-        Assert.assertNotNull(resultReading);
-        Assert.assertNotNull(resultReading.getId());
-        Assert.assertEquals(reading.getYear(), resultReading.getYear());
-        Assert.assertEquals(reading.getMonth(), resultReading.getMonth());
-        Assert.assertEquals(reading.getValue(), resultReading.getValue());
+        ReadingAssertions.execute(reading,resultReading);
 
         Reading reading2 = new Reading(2001, Month.MAY, 1111L);
         reading2.setMeter(testMeter);
 
         resultReading = readingRepository.save(reading2);
 
-        Assert.assertNotNull(resultReading);
-        Assert.assertNotNull(resultReading.getId());
-        Assert.assertEquals(reading2.getYear(), resultReading.getYear());
-        Assert.assertEquals(reading2.getMonth(), resultReading.getMonth());
-        Assert.assertEquals(reading2.getValue(), resultReading.getValue());
+        ReadingAssertions.execute(reading2,resultReading);
 
         List<Reading> readingResultList = readingRepository.findAll();
 

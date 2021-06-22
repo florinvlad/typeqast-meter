@@ -3,8 +3,8 @@ package typeqast.entities.response;
 import org.springframework.http.HttpStatus;
 import typeqast.entities.AggregateReading;
 
-/*
-Wrapper object for aggregate reading
+/**
+ * Wrapper object for {@link AggregateReading}
  */
 public class AggregateReadingResponse {
 

@@ -90,7 +90,7 @@ available methods:
       "name":"newmeter"
       }
 
-    PUT update exististing client meter
+    PUT update existing client meter
       request parameters : client_id (mandatory)
       sample json body:
       {

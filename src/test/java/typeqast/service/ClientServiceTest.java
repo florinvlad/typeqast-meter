@@ -3,20 +3,27 @@ package typeqast.service;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
+import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
+import typeqast.entities.Reading;
 import typeqast.entities.response.ClientResponse;
+import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
+import typeqast.repository.MeterRepository;
+import typeqast.repository.ReadingRepository;
 import typeqast.service.impl.ClientServiceImpl;
+import typeqast.util.assertions.ClientAssertions;
 
 import java.math.BigInteger;
+import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,8 +49,17 @@ public class ClientServiceTest {
     @MockBean
     private ClientRepository clientRepository;
 
+    @MockBean
+    private AddressRepository addressRepository;
+
+    @MockBean
+    private MeterRepository meterRepository;
+
+    @MockBean
+    private ReadingRepository readingRepository;
+
     /**
-     * Add client unit test for {@link ClientServiceImpl}
+     * Unit test for {@link ClientServiceImpl} addClient()
      */
     @Test
     public void addClientTest() {
@@ -57,14 +73,15 @@ public class ClientServiceTest {
 
         ClientResponse clientResponse = clientService.addClient(requestClient);
 
-        Assert.assertNotNull("Client should not be null ", clientResponse.getClient());
-        Assert.assertNotNull("Id should not be null ", clientResponse.getClient().getId());
-        Assert.assertEquals(requestClient.getName(), clientResponse.getClient().getName());
+        Assert.assertNotNull(clientResponse);
+        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+
+        ClientAssertions.execute(mockClient, clientResponse.getClient());
 
     }
 
     /**
-     * Update client unit test for {@link ClientServiceImpl}
+     * Unit test for {@link ClientServiceImpl} updateClient()
      */
     @Test
     public void updateClientTest() {
@@ -78,9 +95,10 @@ public class ClientServiceTest {
 
         ClientResponse clientResponse = clientService.addClient(requestClient);
 
-        Assert.assertNotNull("Client should not be null ", clientResponse.getClient());
-        Assert.assertNotNull("Id should not be null ", clientResponse.getClient().getId());
-        Assert.assertEquals(requestClient.getName(), clientResponse.getClient().getName());
+        Assert.assertNotNull(clientResponse);
+        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+
+        ClientAssertions.execute(mockClient, clientResponse.getClient());
 
         requestClient.setName("name2");
         requestClient.setId(clientResponse.getClient().getId());
@@ -92,16 +110,16 @@ public class ClientServiceTest {
 
         clientResponse = clientService.updateClient(requestClient);
 
-        Assert.assertNotNull("result client should not be null ", clientResponse);
-        Assert.assertNotNull("result client should not be null ", clientResponse.getClient());
-        Assert.assertNotNull("Id should not be null ", clientResponse.getClient().getId());
-        Assert.assertEquals(requestClient.getName(), clientResponse.getClient().getName());
+        Assert.assertNotNull("client response should not be null ", clientResponse);
+        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+
+        ClientAssertions.execute(mockClient, clientResponse.getClient());
 
 
     }
 
     /**
-     * Get clients unit test for {@link ClientServiceImpl}
+     * Unit test for {@link ClientServiceImpl} @getClients()
      */
 
     @Test
@@ -120,6 +138,173 @@ public class ClientServiceTest {
         Assert.assertNotNull(resultClientList);
         Assert.assertEquals(resultClientList.size(), 2);
 
+
+    }
+
+    /**
+     * Test add client with all fields set
+     */
+    @Test
+    public void addClientComprehensiveTest() {
+
+        Client client = new Client("client_name1");
+        client.setId(BigInteger.valueOf(1));
+
+        Meter meter = new Meter("meter_name1");
+        meter.setId(BigInteger.valueOf(2));
+
+        Address address = new Address("country1", "city1", "street1", 1);
+        address.setId(BigInteger.valueOf(3));
+
+        Reading reading = new Reading(2000, Month.APRIL, 1234L);
+
+        meter.addReading(reading);
+        client.setMeter(meter);
+        client.setAddress(address);
+
+        Mockito.when(clientRepository.save(any())).thenReturn(client);
+
+        ClientResponse clientResponse = clientService.addClient(client);
+
+        Assert.assertNotNull(clientResponse);
+        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+
+        Client resultClient = clientResponse.getClient();
+
+        ClientAssertions.execute(client,resultClient);
+
+        Address resultAddress = resultClient.getAddress();
+
+        Assert.assertNotNull("result address should not be null ", resultAddress);
+        Assert.assertNotNull("result address id should not be null ", resultAddress.getId());
+        Assert.assertEquals(address.getId(), resultAddress.getId());
+        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
+        Assert.assertEquals(address.getCity(), resultAddress.getCity());
+        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
+        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+
+        Meter resultMeter = resultClient.getMeter();
+
+        Assert.assertNotNull("result meter should not be null ", resultMeter);
+        Assert.assertNotNull("result meter id should not be null ", resultMeter.getId());
+        Assert.assertEquals(meter.getId(), resultMeter.getId());
+        Assert.assertEquals(meter.getName(), resultMeter.getName());
+
+        List<Reading> resultReadings = resultMeter.getReadings();
+
+        Assert.assertEquals(false,resultReadings.isEmpty());
+        Assert.assertEquals(1, resultReadings.size());
+
+        Reading resultReading = resultReadings.get(0);
+
+        Assert.assertEquals(reading.getId(),resultReading.getId());
+        Assert.assertEquals(reading.getYear(),resultReading.getYear());
+        Assert.assertEquals(reading.getMonth(),resultReading.getMonth());
+        Assert.assertEquals(reading.getValue(),resultReading.getValue());
+
+    }
+
+    /**
+     * Test update client with all fields set
+     */
+    @Test
+    public void updateClientComprehensiveTest() {
+
+        Client client = new Client("client_name1");
+        client.setId(BigInteger.valueOf(1));
+
+        Meter meter = new Meter("meter_name1");
+        meter.setId(BigInteger.valueOf(2));
+
+        Address address = new Address("country1", "city1", "street1", 1);
+        address.setId(BigInteger.valueOf(3));
+
+        Reading reading = new Reading(2000, Month.APRIL, 1234L);
+
+        meter.addReading(reading);
+        client.setMeter(meter);
+        client.setAddress(address);
+
+        Mockito.when(clientRepository.save(any())).thenReturn(client);
+
+        ClientResponse clientResponse = clientService.addClient(client);
+
+        Assert.assertNotNull(clientResponse);
+        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+
+        Client resultClient = clientResponse.getClient();
+
+        ClientAssertions.execute(client,resultClient);
+
+        Address resultAddress = resultClient.getAddress();
+
+        Assert.assertNotNull("result address should not be null ", resultAddress);
+        Assert.assertNotNull("result address id should not be null ", resultAddress.getId());
+        Assert.assertEquals(address.getId(), resultAddress.getId());
+        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
+        Assert.assertEquals(address.getCity(), resultAddress.getCity());
+        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
+        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+
+        Meter resultMeter = resultClient.getMeter();
+
+        Assert.assertNotNull("result meter should not be null ", resultMeter);
+        Assert.assertNotNull("result meter id should not be null ", resultMeter.getId());
+        Assert.assertEquals(meter.getId(), resultMeter.getId());
+        Assert.assertEquals(meter.getName(), resultMeter.getName());
+
+        List<Reading> resultReadings = resultMeter.getReadings();
+
+        Assert.assertEquals(false,resultReadings.isEmpty());
+        Assert.assertEquals(1, resultReadings.size());
+
+        Reading resultReading = resultReadings.get(0);
+
+        Assert.assertEquals(reading.getId(),resultReading.getId());
+        Assert.assertEquals(reading.getYear(),resultReading.getYear());
+        Assert.assertEquals(reading.getMonth(),resultReading.getMonth());
+        Assert.assertEquals(reading.getValue(),resultReading.getValue());
+
+
+//        clientResponse = clientService.updateClient(client);
+//
+//        Assert.assertNotNull(clientResponse);
+//        Assert.assertEquals(HttpStatus.CREATED, clientResponse.getStatus());
+//
+//        Client resultClient = clientResponse.getClient();
+//
+//        Assert.assertNotNull("result client should not be null ", resultClient);
+//        Assert.assertNotNull("Id should not be null ", resultClient.getId());
+//        Assert.assertEquals(client.getName(), resultClient.getName());
+//
+//        Address resultAddress = resultClient.getAddress();
+//
+//        Assert.assertNotNull("result address should not be null ", resultAddress);
+//        Assert.assertNotNull("result address id should not be null ", resultAddress.getId());
+//        Assert.assertEquals(address.getId(), resultAddress.getId());
+//        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
+//        Assert.assertEquals(address.getCity(), resultAddress.getCity());
+//        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
+//        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+//
+//        Meter resultMeter = resultClient.getMeter();
+//
+//        Assert.assertNotNull("result meter should not be null ", resultMeter);
+//        Assert.assertNotNull("result meter id should not be null ", resultMeter.getId());
+//        Assert.assertEquals(meter.getId(), resultMeter.getId());
+//        Assert.assertEquals(meter.getName(), resultMeter.getName());
+//
+//        List<Reading> resultReadings = resultMeter.getReadings();
+//
+//        Assert.assertEquals(false,resultReadings.isEmpty());
+//        Assert.assertEquals(1, resultReadings.size());
+//
+//        Reading resultReading = resultReadings.get(0);
+//
+//        Assert.assertEquals(reading.getId(),resultReading.getId());
+//        Assert.assertEquals(reading.getYear(),resultReading.getYear());
+//        Assert.assertEquals(reading.getMonth(),resultReading.getMonth());
+//        Assert.assertEquals(reading.getValue(),resultReading.getValue());
 
     }
 

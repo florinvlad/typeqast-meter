@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
+import typeqast.util.assertions.AddressAssertions;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +33,7 @@ public class AddressRepositoryTest {
 
         Address resultAddress = addressRepository.save(address);
 
-        Assert.assertNotNull(resultAddress.getId());
-        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
-        Assert.assertEquals(address.getCity(), resultAddress.getCity());
-        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
-        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+        AddressAssertions.execute(address, resultAddress);
 
     }
 
@@ -47,11 +44,7 @@ public class AddressRepositoryTest {
 
         Address resultAddress = addressRepository.save(address);
 
-        Assert.assertNotNull(resultAddress.getId());
-        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
-        Assert.assertEquals(address.getCity(), resultAddress.getCity());
-        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
-        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+        AddressAssertions.execute(address, resultAddress);
 
         address = resultAddress;
         address.setCountry("country1_updated");
@@ -59,20 +52,14 @@ public class AddressRepositoryTest {
         address.setNumber(11);
 
         resultAddress = addressRepository.save(address);
-        Assert.assertNotNull(resultAddress.getId());
-        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
-        Assert.assertEquals(address.getCity(), resultAddress.getCity());
-        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
-        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
 
+        AddressAssertions.execute(address, resultAddress);
 
         Optional<Address> resultAddress2 = addressRepository.findOne(Example.of(address));
 
         Assert.assertTrue(resultAddress2.isPresent());
-        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
-        Assert.assertEquals(address.getCity(), resultAddress.getCity());
-        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
-        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+
+        AddressAssertions.execute(address, resultAddress2.get());
 
     }
 
@@ -83,23 +70,13 @@ public class AddressRepositoryTest {
 
         Address resultAddress = addressRepository.save(address);
 
-        Assert.assertNotNull(resultAddress);
-        Assert.assertNotNull(resultAddress.getId());
-        Assert.assertEquals(address.getCountry(), resultAddress.getCountry());
-        Assert.assertEquals(address.getCity(), resultAddress.getCity());
-        Assert.assertEquals(address.getStreet(), resultAddress.getStreet());
-        Assert.assertEquals(address.getNumber(), resultAddress.getNumber());
+        AddressAssertions.execute(address,resultAddress);
 
         Address address2 = new Address("country2", "city2", "street2", 2);
 
         resultAddress = addressRepository.save(address2);
 
-        Assert.assertNotNull(resultAddress);
-        Assert.assertNotNull(resultAddress.getId());
-        Assert.assertEquals(address2.getCountry(), resultAddress.getCountry());
-        Assert.assertEquals(address2.getCity(), resultAddress.getCity());
-        Assert.assertEquals(address2.getStreet(), resultAddress.getStreet());
-        Assert.assertEquals(address2.getNumber(), resultAddress.getNumber());
+        AddressAssertions.execute(address2,resultAddress);
 
         List<Address> addressResultList = addressRepository.findAll();
 

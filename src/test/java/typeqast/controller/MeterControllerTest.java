@@ -23,6 +23,7 @@ import typeqast.constants.RestEndpoints;
 import typeqast.entities.Meter;
 import typeqast.entities.response.MeterResponse;
 import typeqast.service.MeterService;
+import typeqast.util.assertions.MeterAssertions;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -68,9 +69,7 @@ public class MeterControllerTest {
 
         Meter responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
 
-        Assert.assertNotNull(responseMeter.getId());
-        Assert.assertEquals(mockMeter.getName(), responseMeter.getName());
-        Assert.assertEquals(mockMeter.getId(), responseMeter.getId());
+        MeterAssertions.execute(mockMeter,responseMeter);
 
     }
 
@@ -96,10 +95,7 @@ public class MeterControllerTest {
 
         Meter responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
 
-        Assert.assertNotNull(responseMeter);
-        Assert.assertNotNull(responseMeter.getId());
-        Assert.assertEquals(mockMeter.getName(), responseMeter.getName());
-        Assert.assertEquals(mockMeter.getId(), responseMeter.getId());
+        MeterAssertions.execute(mockMeter,responseMeter);
 
         mockMeter.setName("meter1_updated");
 
@@ -116,11 +112,7 @@ public class MeterControllerTest {
 
         responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
 
-        Assert.assertNotNull(responseMeter);
-        Assert.assertNotNull(responseMeter.getId());
-        Assert.assertEquals(mockMeter.getName(), responseMeter.getName());
-        Assert.assertEquals(mockMeter.getId(), responseMeter.getId());
-
+        MeterAssertions.execute(mockMeter,responseMeter);
 
     }
 

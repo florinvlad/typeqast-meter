@@ -1,9 +1,11 @@
 package typeqast.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import typeqast.business.ReadingProcessor;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
@@ -25,6 +27,10 @@ public class ReadingServiceImpl implements ReadingService {
 
     @Autowired
     private MeterRepository meterRepository;
+
+    @Autowired
+    @Qualifier("aggregateReading")
+    private ReadingProcessor readingProcessor;
 
     @Override
     public ReadingResponse addReading(Reading reading, BigInteger meterId) {
@@ -83,13 +89,16 @@ public class ReadingServiceImpl implements ReadingService {
         Reading queryReading = new Reading();
         queryReading.setYear(year);
 
+        if (meterId != null) {
+            Optional<Meter> meterResult = meterRepository.findOne(Example.of(new Meter(meterId)));
+            if (meterResult.isPresent()) {
+                queryReading.setMeter(meterResult.get());
+            }
+        }
+
         List<Reading> readingList = readingRepository.findAll(Example.of(queryReading));
 
-        Long total = 0L;
-
-        for (Reading reading : readingList) {
-            total += reading.getValue();
-        }
+        Long total = readingProcessor.process(readingList);
 
         aggregateReadingResponse.setAggregateReading(new AggregateReading(year, total));
         aggregateReadingResponse.setStatus(HttpStatus.OK);

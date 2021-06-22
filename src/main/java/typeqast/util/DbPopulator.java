@@ -1,4 +1,4 @@
-package typeqast.business;
+package typeqast.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

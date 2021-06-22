@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Meter;
+import typeqast.util.assertions.MeterAssertions;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,8 +33,7 @@ public class MeterRepositoryTest {
 
         Meter resultMeter = meterRepository.save(meter);
 
-        Assert.assertNotNull(resultMeter.getId());
-        Assert.assertEquals(meter.getName(), resultMeter.getName());
+        MeterAssertions.execute(meter, resultMeter);
 
     }
 
@@ -44,21 +44,20 @@ public class MeterRepositoryTest {
 
         Meter resultMeter = meterRepository.save(meter);
 
-        Assert.assertNotNull(resultMeter.getId());
-        Assert.assertEquals(meter.getName(), resultMeter.getName());
+        MeterAssertions.execute(meter, resultMeter);
 
         meter = resultMeter;
         meter.setName("meter1_updated");
 
         resultMeter = meterRepository.save(meter);
-        Assert.assertNotNull(resultMeter.getId());
-        Assert.assertEquals(meter.getName(), resultMeter.getName());
+
+        MeterAssertions.execute(meter, resultMeter);
 
         Optional<Meter> resultMeter2 = meterRepository.findOne(Example.of(meter));
 
         Assert.assertTrue(resultMeter2.isPresent());
-        Assert.assertNotNull(resultMeter.getId());
-        Assert.assertEquals(meter.getName(), resultMeter.getName());
+
+        MeterAssertions.execute(meter, resultMeter2.get());
 
     }
 
@@ -69,17 +68,13 @@ public class MeterRepositoryTest {
 
         Meter resultMeter = meterRepository.save(meter);
 
-        Assert.assertNotNull(resultMeter);
-        Assert.assertNotNull(resultMeter.getId());
-        Assert.assertEquals(meter.getName(), resultMeter.getName());
+        MeterAssertions.execute(meter, resultMeter);
 
         Meter meter2 = new Meter("meter2");
 
         resultMeter = meterRepository.save(meter2);
 
-        Assert.assertNotNull(resultMeter);
-        Assert.assertNotNull(resultMeter.getId());
-        Assert.assertEquals(meter2.getName(), resultMeter.getName());
+        MeterAssertions.execute(meter2, resultMeter);
 
         List<Meter> meterResultList = meterRepository.findAll();
 

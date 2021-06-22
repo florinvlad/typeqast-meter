@@ -19,7 +19,10 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Client;
 import typeqast.entities.response.ClientResponse;
-import typeqast.service.*;
+import typeqast.service.AddressService;
+import typeqast.service.ClientService;
+import typeqast.service.MeterService;
+import typeqast.util.assertions.ClientAssertions;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -32,10 +35,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-//@SpringBootTest(
-//        SpringBootTest.WebEnvironment.MOCK,
-//        classes = Application.class)
-
 @WebMvcTest(ClientController.class)
 @AutoConfigureMockMvc
 @TestPropertySource(
@@ -103,9 +102,7 @@ public class ClientControllerTest {
 
         Client responseClient = new ObjectMapper().readValue(responseBodyString, Client.class);
 
-        Assert.assertNotNull(responseClient.getId());
-
-        Assert.assertEquals(mockClient.getName(), responseClient.getName());
+        ClientAssertions.execute(mockClient, responseClient);
 
 
     }
@@ -131,10 +128,7 @@ public class ClientControllerTest {
 
         Client responseClient = new ObjectMapper().readValue(responseBodyString, Client.class);
 
-        Assert.assertNotNull(responseClient.getId());
-
-        Assert.assertEquals(clientName, responseClient.getName());
-        Assert.assertEquals(mockClient.getId(), responseClient.getId());
+        ClientAssertions.execute(mockClient, responseClient);
 
         clientName = "name1_updated";
         mockClient.setName(clientName);
@@ -152,10 +146,7 @@ public class ClientControllerTest {
 
         responseClient = new ObjectMapper().readValue(responseBodyString, Client.class);
 
-        Assert.assertNotNull(responseClient.getId());
-
-        Assert.assertEquals(clientName, responseClient.getName());
-        Assert.assertEquals(mockClient.getId(), responseClient.getId());
+        ClientAssertions.execute(mockClient, responseClient);
 
 
     }

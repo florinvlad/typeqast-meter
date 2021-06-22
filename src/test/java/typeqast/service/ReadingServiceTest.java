@@ -5,17 +5,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
+import typeqast.business.ReadingProcessor;
+import typeqast.business.impl.AggregateReadingCalculator;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.entities.response.ReadingResponse;
 import typeqast.repository.MeterRepository;
 import typeqast.repository.ReadingRepository;
 import typeqast.service.impl.ReadingServiceImpl;
+import typeqast.util.assertions.ReadingAssertions;
 
 import java.math.BigInteger;
 import java.time.Month;
@@ -37,9 +41,23 @@ public class ReadingServiceTest {
         }
 
     }
+    @TestConfiguration
+    static class ReadingProcessorTestContextConfiguration {
+
+        @Bean
+        public ReadingProcessor readingProcessor() {
+            return new AggregateReadingCalculator();
+        }
+
+    }
+
 
     @Autowired
     private ReadingService readingService;
+
+    @Autowired
+    @Qualifier("aggregateReading")
+    private ReadingProcessor readingProcessor;
 
     @MockBean
     private ReadingRepository readingRepository;
@@ -65,10 +83,8 @@ public class ReadingServiceTest {
 
         Assert.assertNotNull("Result reading response should not be null ", readingResponse);
         Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
-        Assert.assertNotNull("Reading Id should not be null ", readingResponse.getReading().getId());
-        Assert.assertEquals(requestReading.getYear(), readingResponse.getReading().getYear());
-        Assert.assertEquals(requestReading.getMonth(), readingResponse.getReading().getMonth());
-        Assert.assertEquals(requestReading.getValue(), readingResponse.getReading().getValue());
+
+        ReadingAssertions.execute(mockResultReading,readingResponse.getReading());
 
     }
 
@@ -90,10 +106,8 @@ public class ReadingServiceTest {
 
         Assert.assertNotNull("Result reading response should not be null ", readingResponse);
         Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
-        Assert.assertNotNull("Reading Id should not be null ", readingResponse.getReading().getId());
-        Assert.assertEquals(requestReading.getYear(), readingResponse.getReading().getYear());
-        Assert.assertEquals(requestReading.getMonth(), readingResponse.getReading().getMonth());
-        Assert.assertEquals(requestReading.getValue(), readingResponse.getReading().getValue());
+
+        ReadingAssertions.execute(mockResultReading,readingResponse.getReading());
 
         requestReading.setYear(2002);
         requestReading.setMonth(Month.MAY);
@@ -110,10 +124,8 @@ public class ReadingServiceTest {
 
         Assert.assertNotNull("Result reading response should not be null ", readingResponse);
         Assert.assertNotNull("Result reading should not be null ", readingResponse.getReading());
-        Assert.assertNotNull("Reading Id should not be null ", readingResponse.getReading().getId());
-        Assert.assertEquals(requestReading.getYear(), readingResponse.getReading().getYear());
-        Assert.assertEquals(requestReading.getMonth(), readingResponse.getReading().getMonth());
-        Assert.assertEquals(requestReading.getValue(), readingResponse.getReading().getValue());
+
+        ReadingAssertions.execute(mockResultReading2,readingResponse.getReading());
 
     }
 

@@ -16,6 +16,7 @@ import typeqast.entities.response.AddressResponse;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
 import typeqast.service.impl.AddressServiceImpl;
+import typeqast.util.assertions.AddressAssertions;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -63,12 +64,8 @@ public class AddressServiceTest {
         AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
         Assert.assertNotNull("Response address object should not be null ", addressResponse);
-        Assert.assertNotNull("Response address should not be null ", addressResponse.getAddress());
-        Assert.assertNotNull("Address Id should not be null ", addressResponse.getAddress().getId());
-        Assert.assertEquals(requestAddress.getCountry(), addressResponse.getAddress().getCountry());
-        Assert.assertEquals(requestAddress.getCity(), addressResponse.getAddress().getCity());
-        Assert.assertEquals(requestAddress.getStreet(), addressResponse.getAddress().getStreet());
-        Assert.assertEquals(requestAddress.getNumber(), addressResponse.getAddress().getNumber());
+
+        AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
 
     }
 
@@ -89,23 +86,10 @@ public class AddressServiceTest {
         AddressResponse addressResponse = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
         Assert.assertNotNull("Response address object should not be null ", addressResponse);
-        Assert.assertNotNull("Response address should not be null ", addressResponse.getAddress());
-        Assert.assertNotNull("Address Id should not be null ", addressResponse.getAddress().getId());
-        Assert.assertEquals(requestAddress.getCountry(), addressResponse.getAddress().getCountry());
-        Assert.assertEquals(requestAddress.getCity(), addressResponse.getAddress().getCity());
-        Assert.assertEquals(requestAddress.getStreet(), addressResponse.getAddress().getStreet());
-        Assert.assertEquals(requestAddress.getNumber(), addressResponse.getAddress().getNumber());
 
-        requestAddress.setCountry("country1_updated");
-        requestAddress.setCity("city1_updated");
-        requestAddress.setStreet("street1_updated");
-        requestAddress.setNumber(11);
-        requestAddress.setId(addressResponse.getAddress().getId());
+        AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
 
-        mockResultAddress.setCountry("country1_updated");
-        mockResultAddress.setCity("city1_updated");
-        mockResultAddress.setStreet("street1_updated");
-        mockResultAddress.setNumber(11);
+        mockResultAddress = new Address("country1_updated", "city1_updated", "street1_updated", 2);
 
         Mockito.when(addressRepository.findOne(any())).thenReturn(Optional.of(mockResultAddress));
         Mockito.when(addressRepository.save(requestAddress)).thenReturn(mockResultAddress);
@@ -113,13 +97,8 @@ public class AddressServiceTest {
         addressResponse = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
 
         Assert.assertNotNull("Response address object should not be null ", addressResponse);
-        Assert.assertNotNull("Response address should not be null ", addressResponse.getAddress());
-        Assert.assertNotNull("Address Id should not be null ", addressResponse.getAddress().getId());
-        Assert.assertEquals(requestAddress.getCountry(), addressResponse.getAddress().getCountry());
-        Assert.assertEquals(requestAddress.getCity(), addressResponse.getAddress().getCity());
-        Assert.assertEquals(requestAddress.getStreet(), addressResponse.getAddress().getStreet());
-        Assert.assertEquals(requestAddress.getNumber(), addressResponse.getAddress().getNumber());
 
+        AddressAssertions.execute(mockResultAddress, addressResponse.getAddress());
 
     }
 

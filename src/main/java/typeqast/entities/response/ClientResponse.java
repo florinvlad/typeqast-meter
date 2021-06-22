@@ -3,8 +3,8 @@ package typeqast.entities.response;
 import org.springframework.http.HttpStatus;
 import typeqast.entities.Client;
 
-/*
-Wrapper object for
+/**
+ * Wrapper object for {@link Client}
  */
 public class ClientResponse {
 

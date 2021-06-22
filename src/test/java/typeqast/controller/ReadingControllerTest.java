@@ -25,6 +25,7 @@ import typeqast.entities.Reading;
 import typeqast.entities.response.AggregateReadingResponse;
 import typeqast.entities.response.ReadingResponse;
 import typeqast.service.ReadingService;
+import typeqast.util.assertions.ReadingAssertions;
 
 import java.math.BigInteger;
 import java.time.Month;
@@ -77,11 +78,7 @@ public class ReadingControllerTest {
 
         Reading responseReading = new ObjectMapper().readValue(responseBodyString, Reading.class);
 
-        Assert.assertNotNull(responseReading.getId());
-        Assert.assertEquals(year, responseReading.getYear());
-        Assert.assertEquals(month, responseReading.getMonth());
-        Assert.assertEquals(value, responseReading.getValue());
-        Assert.assertEquals(mockReading.getId(), responseReading.getId());
+        ReadingAssertions.execute(mockReading, responseReading);
 
     }
 
@@ -152,7 +149,6 @@ public class ReadingControllerTest {
         AggregateReading responseAggregateReading = new ObjectMapper().readValue(responseBodyString, AggregateReading.class);
 
         Assert.assertNotNull(responseAggregateReading);
-
         Assert.assertEquals(aggregateReadingResponse.getAggregateReading().getTotal(), responseAggregateReading.getTotal());
         Assert.assertEquals(mockResultReading.getYear(), responseAggregateReading.getYear());
 

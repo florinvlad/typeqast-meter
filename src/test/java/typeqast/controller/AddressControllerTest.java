@@ -23,6 +23,7 @@ import typeqast.constants.RestEndpoints;
 import typeqast.entities.Address;
 import typeqast.entities.response.AddressResponse;
 import typeqast.service.AddressService;
+import typeqast.util.assertions.AddressAssertions;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -45,6 +46,75 @@ public class AddressControllerTest {
 
     @MockBean
     private AddressService mockAddressService;
+
+    @Test
+    public void addAddresssTest() throws Exception {
+
+        Address mockAddress = new Address("country1", "city1", "street1", 1);
+
+        String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
+
+        mockAddress.setId(BigInteger.valueOf(1));
+        when(mockAddressService.addAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.CREATED));
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(RequestParams.CLIENT_ID, String.valueOf(1));
+        RequestBuilder requestBuilder = (post(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).params(params).content(addressAsString));
+
+        MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
+        String responseBodyString = result.getResponse().getContentAsString();
+
+        Assert.assertNotNull(responseBodyString);
+
+        Address responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
+
+        AddressAssertions.execute(mockAddress, responseAddress);
+
+    }
+
+    @Test
+    public void updateAddressTest() throws Exception {
+
+        Address mockAddress = new Address("country1", "city1", "street1", 1);
+
+        String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
+
+        mockAddress.setId(BigInteger.valueOf(1));
+        when(mockAddressService.addAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.CREATED));
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(RequestParams.CLIENT_ID, String.valueOf(1));
+        RequestBuilder requestBuilder = (post(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).params(params).content(addressAsString));
+
+        MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
+        String responseBodyString = result.getResponse().getContentAsString();
+
+        Assert.assertNotNull(responseBodyString);
+
+        Address responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
+
+        AddressAssertions.execute(mockAddress, responseAddress);
+
+        mockAddress = new Address("country1_updated", "city1_updated", "street1_updated", 2);
+        mockAddress.setId(BigInteger.valueOf(1));
+
+        addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
+
+        requestBuilder = (put(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).content(addressAsString));
+
+        when(mockAddressService.updateAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.OK));
+
+        result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
+        responseBodyString = result.getResponse().getContentAsString();
+
+        Assert.assertNotNull(responseBodyString);
+
+        responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
+
+        AddressAssertions.execute(mockAddress, responseAddress);
+
+    }
+
 
     @Test
     public void getAddresssTest() throws Exception {
@@ -72,106 +142,6 @@ public class AddressControllerTest {
 
         Assert.assertNotNull(responseAddressList);
         Assert.assertEquals(2, responseAddressList.size());
-
-    }
-
-    @Test
-    public void addAddresssTest() throws Exception {
-
-        String country = "country1";
-        String city = "city1";
-        String street = "street1";
-        Integer number = 1;
-
-        Address mockAddress = new Address(country, city, street, number);
-
-        String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
-
-        mockAddress.setId(BigInteger.valueOf(1));
-        when(mockAddressService.addAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.CREATED));
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(RequestParams.CLIENT_ID, String.valueOf(1));
-        RequestBuilder requestBuilder = (post(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).params(params).content(addressAsString));
-
-        MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
-        String responseBodyString = result.getResponse().getContentAsString();
-
-        Assert.assertNotNull(responseBodyString);
-
-        Address responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
-
-        Assert.assertNotNull(responseAddress.getId());
-        Assert.assertEquals(country, responseAddress.getCountry());
-        Assert.assertEquals(city, responseAddress.getCity());
-        Assert.assertEquals(street, responseAddress.getStreet());
-        Assert.assertEquals(number, responseAddress.getNumber());
-        Assert.assertEquals(mockAddress.getId(), responseAddress.getId());
-
-    }
-
-    @Test
-    public void updateAddressTest() throws Exception {
-
-        String country = "country1";
-        String city = "city1";
-        String street = "street1";
-        Integer number = 1;
-
-        Address mockAddress = new Address(country, city, street, number);
-
-        String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
-
-        mockAddress.setId(BigInteger.valueOf(1));
-        when(mockAddressService.addAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.CREATED));
-
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add(RequestParams.CLIENT_ID, String.valueOf(1));
-        RequestBuilder requestBuilder = (post(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).params(params).content(addressAsString));
-
-        MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
-        String responseBodyString = result.getResponse().getContentAsString();
-
-        Assert.assertNotNull(responseBodyString);
-
-        Address responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
-
-        Assert.assertNotNull(responseAddress.getId());
-        Assert.assertEquals(country, responseAddress.getCountry());
-        Assert.assertEquals(city, responseAddress.getCity());
-        Assert.assertEquals(street, responseAddress.getStreet());
-        Assert.assertEquals(number, responseAddress.getNumber());
-        Assert.assertEquals(mockAddress.getId(), responseAddress.getId());
-
-        country = "country1_updated";
-        city = "city1_updated";
-        street = "street1_updated";
-        number = 11;
-
-        mockAddress.setCountry(country);
-        mockAddress.setCity(city);
-        mockAddress.setStreet(street);
-        mockAddress.setNumber(number);
-
-        addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
-
-        requestBuilder = (put(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).content(addressAsString));
-
-        when(mockAddressService.updateAddress(any(), any())).thenReturn(new AddressResponse(mockAddress, HttpStatus.OK));
-
-        result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
-        responseBodyString = result.getResponse().getContentAsString();
-
-        Assert.assertNotNull(responseBodyString);
-
-        responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
-
-        Assert.assertNotNull(responseAddress.getId());
-        Assert.assertEquals(country, responseAddress.getCountry());
-        Assert.assertEquals(city, responseAddress.getCity());
-        Assert.assertEquals(street, responseAddress.getStreet());
-        Assert.assertEquals(number, responseAddress.getNumber());
-        Assert.assertEquals(mockAddress.getId(), responseAddress.getId());
 
     }
 
