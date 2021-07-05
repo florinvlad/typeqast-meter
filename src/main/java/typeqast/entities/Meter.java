@@ -72,4 +72,8 @@ public class Meter {
     public void setName(String name) {
         this.name = name;
     }
+
+    public void setReadings(List<Reading> readings) {
+        this.readings = readings;
+    }
 }

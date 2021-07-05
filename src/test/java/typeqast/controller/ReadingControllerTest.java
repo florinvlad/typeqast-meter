@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.ReadingDTO;
 import typeqast.service.ReadingService;
 import typeqast.util.assertions.ReadingAssertions;
 
@@ -54,13 +55,13 @@ public class ReadingControllerTest {
         Month month = Month.APRIL;
         Long value = 1234L;
 
-        Reading mockReading = new Reading(year, month, value);
+        ReadingDTO mockReadingDTO = new ReadingDTO(year, month, value);
 
-        String readingAsString = new ObjectMapper().writeValueAsString(mockReading);
+        String readingAsString = new ObjectMapper().writeValueAsString(mockReadingDTO);
 
-        mockReading.setId(BigInteger.valueOf(1));
+        mockReadingDTO.setId(BigInteger.valueOf(1));
 
-        when(mockReadingService.addReading(any(), any())).thenReturn(mockReading);
+        when(mockReadingService.addReading(any(), any())).thenReturn(mockReadingDTO);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.METER_ID, String.valueOf(1));
@@ -72,9 +73,9 @@ public class ReadingControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        Reading responseReading = new ObjectMapper().readValue(responseBodyString, Reading.class);
+        ReadingDTO responseReading = new ObjectMapper().readValue(responseBodyString, ReadingDTO.class);
 
-        ReadingAssertions.execute(mockReading, responseReading);
+        ReadingAssertions.execute(mockReadingDTO, responseReading);
 
     }
 
@@ -83,14 +84,14 @@ public class ReadingControllerTest {
 
         RequestBuilder requestBuilder = (get(RestEndpoints.READINGS).contentType(MediaType.APPLICATION_JSON));
 
-        Reading mockResultReading = new Reading(2000, Month.APRIL, 1234L);
+        ReadingDTO mockResultReadingDTO = new ReadingDTO(2000, Month.APRIL, 1234L);
 
-        List<Reading> readingList = new ArrayList<>();
-        readingList.add(mockResultReading);
+        List<ReadingDTO> readingList = new ArrayList<>();
+        readingList.add(mockResultReadingDTO);
 
-        mockResultReading = new Reading(2000, Month.JUNE, 1111L);
+        mockResultReadingDTO = new ReadingDTO(2000, Month.JUNE, 1111L);
 
-        readingList.add(mockResultReading);
+        readingList.add(mockResultReadingDTO);
 
         given(mockReadingService.getReadings()).willReturn(readingList);
 

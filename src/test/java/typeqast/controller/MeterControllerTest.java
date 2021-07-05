@@ -22,6 +22,7 @@ import typeqast.constants.RestEndpoints;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.MeterDTO;
 import typeqast.service.MeterService;
 import typeqast.util.assertions.MeterAssertions;
 
@@ -51,13 +52,13 @@ public class MeterControllerTest {
     @Test
     public void addMeterTest() throws Exception {
 
-        Meter mockMeter = new Meter("meter1");
+        MeterDTO mockMeterDTO = new MeterDTO("meter1");
 
-        String meterAsString = new ObjectMapper().writeValueAsString(mockMeter);
+        String meterAsString = new ObjectMapper().writeValueAsString(mockMeterDTO);
 
-        mockMeter.setId(BigInteger.valueOf(1));
+        mockMeterDTO.setId(BigInteger.valueOf(1));
 
-        when(mockMeterService.addMeter(any(), any())).thenReturn(mockMeter);
+        when(mockMeterService.addMeter(any(), any())).thenReturn(mockMeterDTO);
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.CLIENT_ID, String.valueOf(1));
@@ -68,24 +69,24 @@ public class MeterControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        Meter responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
+        MeterDTO responseMeterDTO = new ObjectMapper().readValue(responseBodyString, MeterDTO.class);
 
-        MeterAssertions.execute(mockMeter, responseMeter);
+        MeterAssertions.execute(mockMeterDTO, responseMeterDTO);
 
     }
 
     @Test
     public void updateMeterTest() throws Exception {
 
-        Meter mockMeter = new Meter("meter1");
+        MeterDTO mockMeterDTO = new MeterDTO("meter1");
 
-        String meterAsString = new ObjectMapper().writeValueAsString(mockMeter);
+        String meterAsString = new ObjectMapper().writeValueAsString(mockMeterDTO);
 
-        mockMeter.setId(BigInteger.valueOf(1));
+        mockMeterDTO.setId(BigInteger.valueOf(1));
 
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add(RequestParams.CLIENT_ID, String.valueOf(1));
-        when(mockMeterService.addMeter(any(), any())).thenReturn(mockMeter);
+        when(mockMeterService.addMeter(any(), any())).thenReturn(mockMeterDTO);
 
         RequestBuilder requestBuilder = (post(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON).params(params).content(meterAsString));
 
@@ -94,28 +95,28 @@ public class MeterControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        Meter responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
+        MeterDTO responseMeterDTO = new ObjectMapper().readValue(responseBodyString, MeterDTO.class);
 
-        MeterAssertions.execute(mockMeter, responseMeter);
+        MeterAssertions.execute(mockMeterDTO, responseMeterDTO);
 
-        mockMeter.setName("meter1_updated");
+        mockMeterDTO.setName("meter1_updated");
 
-        meterAsString = new ObjectMapper().writeValueAsString(mockMeter);
+        meterAsString = new ObjectMapper().writeValueAsString(mockMeterDTO);
 
         params.add(RequestParams.METER_ID, String.valueOf(2));
 
         requestBuilder = (put(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON).params(params).content(meterAsString).params(params));
 
-        when(mockMeterService.updateMeter(any(), any())).thenReturn(mockMeter);
+        when(mockMeterService.updateMeter(any(), any())).thenReturn(mockMeterDTO);
 
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();
 
         Assert.assertNotNull(responseBodyString);
 
-        responseMeter = new ObjectMapper().readValue(responseBodyString, Meter.class);
+        responseMeterDTO = new ObjectMapper().readValue(responseBodyString, MeterDTO.class);
 
-        MeterAssertions.execute(mockMeter, responseMeter);
+        MeterAssertions.execute(mockMeterDTO, responseMeterDTO);
 
     }
 
@@ -124,14 +125,14 @@ public class MeterControllerTest {
 
         RequestBuilder requestBuilder = (get(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON));
 
-        Meter mockResultMeter = new Meter("meter1");
+        MeterDTO mockResultMeterDTO = new MeterDTO("meter1");
 
-        List<Meter> meterList = new ArrayList<>();
-        meterList.add(mockResultMeter);
+        List<MeterDTO> meterList = new ArrayList<>();
+        meterList.add(mockResultMeterDTO);
 
-        mockResultMeter = new Meter("meter2");
+        mockResultMeterDTO = new MeterDTO("meter2");
 
-        meterList.add(mockResultMeter);
+        meterList.add(mockResultMeterDTO);
 
         given(mockMeterService.getMeters(null)).willReturn(meterList);
 

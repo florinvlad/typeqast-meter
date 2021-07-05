@@ -1,6 +1,7 @@
 package typeqast.service;
 
-import typeqast.entities.Reading;
+import typeqast.entities.dto.ReadingDTO;
+import typeqast.entities.exception.MeterNotFoundException;
 import typeqast.entities.exception.ReadingNotFoundException;
 
 import java.math.BigInteger;
@@ -8,10 +9,10 @@ import java.util.List;
 
 public interface ReadingService {
 
-    Reading addReading(Reading reading, BigInteger meterId);
+    ReadingDTO addReading(ReadingDTO reading, BigInteger meterId) throws MeterNotFoundException;
 
-    Reading updateReading(Reading reading, BigInteger meterId) throws ReadingNotFoundException;
+    ReadingDTO updateReading(ReadingDTO reading, BigInteger meterId) throws MeterNotFoundException, ReadingNotFoundException;
 
-    List<Reading> getReadings();
+    List<ReadingDTO> getReadings();
 
 }

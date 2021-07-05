@@ -10,8 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
+import typeqast.business.transformer.AddressMapperService;
+import typeqast.business.transformer.impl.AddressMapperServiceImpl;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
+import typeqast.entities.dto.AddressDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
@@ -38,6 +41,19 @@ public class AddressServiceTest {
 
     }
 
+    @TestConfiguration
+    static class MapperServiceImplTestContextConfiguration {
+
+        @Bean
+        public AddressMapperService addressMapperService() {
+            return new AddressMapperServiceImpl();
+        }
+
+    }
+
+    @Autowired
+    private AddressMapperService addressMapperService;
+
     @Autowired
     private AddressService addressService;
 
@@ -48,12 +64,12 @@ public class AddressServiceTest {
     private ClientRepository clientRepository;
 
     /**
-     * Add address unit test for {@link AddressServiceImpl#addAddress(Address, BigInteger)}
+     * Add address unit test for {@link AddressServiceImpl#addAddress(AddressDTO, BigInteger)}
      */
     @Test
     public void addAddressTest() {
 
-        Address requestAddress = new Address("country1", "city1", "street1", 1);
+        AddressDTO requestAddressDTO = new AddressDTO("country1", "city1", "street1", 1);
 
         Address mockResultAddress = new Address("country1", "city1", "street1", 1);
         mockResultAddress.setId(BigInteger.valueOf(1));
@@ -61,21 +77,21 @@ public class AddressServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
-        Address address = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+        AddressDTO resultAddressDTO = addressService.addAddress(requestAddressDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull(" address object should not be null ", address);
+        Assert.assertNotNull(" address object should not be null ", resultAddressDTO);
 
-        AddressAssertions.execute(mockResultAddress, address);
+        AddressAssertions.execute(addressMapperService.toAddressDTO(mockResultAddress), resultAddressDTO);
 
     }
 
     /**
-     * Update address unit test for {@link AddressServiceImpl#updateAddress(Address, BigInteger)}
+     * Update address unit test for {@link AddressServiceImpl#updateAddress(AddressDTO, BigInteger)}
      */
     @Test
     public void updateAddressTest() {
 
-        Address requestAddress = new Address("country1", "city1", "street1", 1);
+        AddressDTO requestAddress = new AddressDTO("country1", "city1", "street1", 1);
 
         Address mockResultAddress = new Address("country1", "city1", "street1", 1);
         mockResultAddress.setId(BigInteger.valueOf(1));
@@ -83,11 +99,13 @@ public class AddressServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
-        Address address = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+        AddressDTO resultAddressDTO = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull(" address object should not be null ", address);
+        Assert.assertNotNull(" address object should not be null ", resultAddressDTO);
 
-        AddressAssertions.execute(mockResultAddress, address);
+        AddressDTO expectedAddressDTO = addressMapperService.toAddressDTO(mockResultAddress);
+
+        AddressAssertions.execute(expectedAddressDTO, resultAddressDTO);
 
         mockResultAddress = new Address("country1_updated", "city1_updated", "street1_updated", 2);
         mockResultAddress.setId(BigInteger.valueOf(1));
@@ -98,11 +116,12 @@ public class AddressServiceTest {
         Mockito.when(addressRepository.findOne(any())).thenReturn(Optional.of(mockResultAddress));
         Mockito.when(addressRepository.save(any())).thenReturn(mockResultAddress);
 
-        address = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
+        resultAddressDTO = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull(" address object should not be null ", address);
+        Assert.assertNotNull(" address object should not be null ", resultAddressDTO);
 
-        AddressAssertions.execute(mockResultAddress, address);
+        expectedAddressDTO = addressMapperService.toAddressDTO(mockResultAddress);
+        AddressAssertions.execute(expectedAddressDTO, resultAddressDTO);
 
     }
 
@@ -121,7 +140,7 @@ public class AddressServiceTest {
 
         Mockito.when(addressRepository.findAll(any(Example.class))).thenReturn(addressList);
 
-        List<Address> resultAddressList = addressService.getAddresses(null);
+        List<AddressDTO> resultAddressList = addressService.getAddresses(null);
 
         Assert.assertNotNull(resultAddressList);
         Assert.assertEquals(resultAddressList.size(), 2);
@@ -135,7 +154,7 @@ public class AddressServiceTest {
     @Test
     public void addAddressInexistentClientTest() {
 
-        Address requestAddress = new Address("country1", "city1", "street1", 1);
+        AddressDTO requestAddress = new AddressDTO("country1", "city1", "street1", 1);
 
         Address mockResultAddress = new Address("country1", "city1", "street1", 1);
         mockResultAddress.setId(BigInteger.valueOf(1));

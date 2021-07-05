@@ -1,5 +1,6 @@
 package typeqast.entities.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import typeqast.entities.Meter;
 
 import java.math.BigInteger;
@@ -9,6 +10,7 @@ public class ReadingDTO {
 
     private BigInteger id;
 
+    @JsonIgnore
     private Meter meter;
 
     private Integer year;
@@ -16,6 +18,16 @@ public class ReadingDTO {
     private Month month;
 
     private Long value;
+
+    public ReadingDTO(Integer year, Month month, Long value) {
+        this.year = year;
+        this.month = month;
+        this.value = value;
+    }
+
+    public ReadingDTO() {
+
+    }
 
     public BigInteger getId() {
         return id;

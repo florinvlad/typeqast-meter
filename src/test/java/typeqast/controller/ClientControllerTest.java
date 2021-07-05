@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Client;
+import typeqast.entities.dto.ClientDTO;
 import typeqast.service.AddressService;
 import typeqast.service.ClientService;
 import typeqast.service.MeterService;
@@ -55,13 +56,13 @@ public class ClientControllerTest {
     public void getClientsTest() throws Exception {
         RequestBuilder requestBuilder = (get(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON));
 
-        Client client = new Client("name1");
+        ClientDTO client = new ClientDTO("name1");
 
-        List<Client> clientList = new ArrayList<>();
+        List<ClientDTO> clientList = new ArrayList<>();
 
         clientList.add(client);
 
-        client = new Client("name2");
+        client = new ClientDTO("name2");
 
         clientList.add(client);
 
@@ -86,21 +87,21 @@ public class ClientControllerTest {
     @Test
     public void addClientTest() throws Exception {
 
-        Client mockClient = new Client("name1");
+        ClientDTO mockClientDTO = new ClientDTO("name1");
 
-        String clientAsString = new ObjectMapper().writeValueAsString(mockClient);
+        String clientAsString = new ObjectMapper().writeValueAsString(mockClientDTO);
 
-        mockClient.setId(BigInteger.valueOf(1));
-        when(mockClientService.addClient(any())).thenReturn(mockClient);
+        mockClientDTO.setId(BigInteger.valueOf(1));
+        when(mockClientService.addClient(any())).thenReturn(mockClientDTO);
 
         RequestBuilder requestBuilder = (post(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON).content(clientAsString));
 
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Client responseClient = new ObjectMapper().readValue(responseBodyString, Client.class);
+        ClientDTO responseClient = new ObjectMapper().readValue(responseBodyString, ClientDTO.class);
 
-        ClientAssertions.execute(mockClient, responseClient);
+        ClientAssertions.execute(mockClientDTO, responseClient);
 
 
     }
@@ -110,12 +111,12 @@ public class ClientControllerTest {
 
         String clientName = "name1";
 
-        Client mockClient = new Client(clientName);
-        mockClient.setId(BigInteger.valueOf(1));
+        ClientDTO mockClientDTO = new ClientDTO(clientName);
+        mockClientDTO.setId(BigInteger.valueOf(1));
 
-        String clientAsString = new ObjectMapper().writeValueAsString(mockClient);
+        String clientAsString = new ObjectMapper().writeValueAsString(mockClientDTO);
 
-        when(mockClientService.addClient(any())).thenReturn(mockClient);
+        when(mockClientService.addClient(any())).thenReturn(mockClientDTO);
 
         RequestBuilder requestBuilder = (post(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON).content(clientAsString));
 
@@ -124,27 +125,27 @@ public class ClientControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        Client responseClient = new ObjectMapper().readValue(responseBodyString, Client.class);
+        ClientDTO responseClient = new ObjectMapper().readValue(responseBodyString, ClientDTO.class);
 
-        ClientAssertions.execute(mockClient, responseClient);
+        ClientAssertions.execute(mockClientDTO, responseClient);
 
         clientName = "name1_updated";
-        mockClient.setName(clientName);
+        mockClientDTO.setName(clientName);
 
-        clientAsString = new ObjectMapper().writeValueAsString(mockClient);
+        clientAsString = new ObjectMapper().writeValueAsString(mockClientDTO);
 
         requestBuilder = (put(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON).content(clientAsString));
 
-        when(mockClientService.updateClient(any())).thenReturn(mockClient);
+        when(mockClientService.updateClient(any())).thenReturn(mockClientDTO);
 
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();
 
         Assert.assertNotNull(responseBodyString);
 
-        responseClient = new ObjectMapper().readValue(responseBodyString, Client.class);
+        responseClient = new ObjectMapper().readValue(responseBodyString, ClientDTO.class);
 
-        ClientAssertions.execute(mockClient, responseClient);
+        ClientAssertions.execute(mockClientDTO, responseClient);
 
 
     }

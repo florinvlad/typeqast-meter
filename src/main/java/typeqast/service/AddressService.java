@@ -1,6 +1,6 @@
 package typeqast.service;
 
-import typeqast.entities.Address;
+import typeqast.entities.dto.AddressDTO;
 import typeqast.entities.exception.AddressNotFoundException;
 import typeqast.entities.exception.ClientNotFoundException;
 
@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface AddressService {
 
-    Address addAddress(Address address, BigInteger clientId) throws ClientNotFoundException;
+    AddressDTO addAddress(AddressDTO address, BigInteger clientId) throws ClientNotFoundException;
 
-    Address updateAddress(Address address, BigInteger clientId) throws ClientNotFoundException, AddressNotFoundException;
+    AddressDTO updateAddress(AddressDTO address, BigInteger clientId) throws ClientNotFoundException, AddressNotFoundException;
 
-    List<Address> getAddresses(BigInteger id);
+    List<AddressDTO> getAddresses(BigInteger id);
 
 }

@@ -1,8 +1,8 @@
-package typeqast.business.impl;
+package typeqast.business.processor.impl;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-import typeqast.business.ReadingProcessor;
+import typeqast.business.processor.ReadingProcessor;
 import typeqast.entities.Reading;
 
 import java.util.List;

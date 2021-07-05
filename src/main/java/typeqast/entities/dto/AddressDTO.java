@@ -1,14 +1,35 @@
 package typeqast.entities.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import typeqast.entities.Client;
+
+import java.math.BigInteger;
 
 public class AddressDTO {
 
-    private Client client;
+    private BigInteger id;
+
     private String country;
+
     private String city;
+
     private String street;
+
     private Integer number;
+
+    @JsonIgnore
+    private Client client;
+
+    public AddressDTO(String country, String city, String street, Integer number) {
+        this.country = country;
+        this.city = city;
+        this.street = street;
+        this.number = number;
+    }
+
+    public AddressDTO() {
+
+    }
 
     public Client getClient() {
         return client;
@@ -48,5 +69,13 @@ public class AddressDTO {
 
     public void setNumber(Integer number) {
         this.number = number;
+    }
+
+    public BigInteger getId() {
+        return id;
+    }
+
+    public void setId(BigInteger id) {
+        this.id = id;
     }
 }

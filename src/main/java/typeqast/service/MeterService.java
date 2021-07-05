@@ -2,6 +2,7 @@ package typeqast.service;
 
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Meter;
+import typeqast.entities.dto.MeterDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.entities.exception.MeterNotFoundException;
 
@@ -10,11 +11,11 @@ import java.util.List;
 
 public interface MeterService {
 
-    Meter addMeter(Meter meter, BigInteger clientId) throws ClientNotFoundException;
+    MeterDTO addMeter(MeterDTO meterDTO, BigInteger clientId) throws ClientNotFoundException;
 
-    Meter updateMeter(Meter meter, BigInteger clientId) throws ClientNotFoundException, MeterNotFoundException;
+    MeterDTO updateMeter(MeterDTO meterDTO, BigInteger clientId) throws ClientNotFoundException, MeterNotFoundException;
 
-    List<Meter> getMeters(BigInteger meterId);
+    List<MeterDTO> getMeters(BigInteger meterId);
 
     AggregateReading getAggregateReadings(Integer year, BigInteger meterId);
 

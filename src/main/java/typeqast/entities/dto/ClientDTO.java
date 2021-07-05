@@ -15,6 +15,13 @@ public class ClientDTO {
 
     private Meter meter;
 
+    public ClientDTO(String name) {
+        this.name = name;
+    }
+
+    public ClientDTO() {
+    }
+
     public BigInteger getId() {
         return id;
     }

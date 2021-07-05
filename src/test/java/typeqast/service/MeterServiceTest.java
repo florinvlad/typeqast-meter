@@ -12,12 +12,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
-import typeqast.business.ReadingProcessor;
-import typeqast.business.impl.AggregateReadingCalculator;
+import typeqast.business.processor.ReadingProcessor;
+import typeqast.business.processor.impl.AggregateReadingCalculator;
+import typeqast.business.transformer.MeterMapperService;
+import typeqast.business.transformer.impl.MeterMapperServiceImpl;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.MeterDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
@@ -45,6 +48,16 @@ public class MeterServiceTest {
 
     }
 
+    @TestConfiguration
+    static class MapperServiceImplTestContextConfiguration {
+
+        @Bean
+        public MeterMapperService meterMapperService() {
+            return new MeterMapperServiceImpl();
+        }
+
+    }
+
 
     @TestConfiguration
     static class ReadingProcessorTestContextConfiguration {
@@ -61,6 +74,9 @@ public class MeterServiceTest {
     private ReadingProcessor readingProcessor;
 
     @Autowired
+    private MeterMapperService meterMapperService;
+
+    @Autowired
     private MeterService meterService;
 
     @MockBean
@@ -70,12 +86,12 @@ public class MeterServiceTest {
     private ClientRepository clientRepository;
 
     /**
-     * Add meter unit test for {@link MeterServiceImpl#addMeter(Meter, BigInteger)}
+     * Add meter unit test for {@link MeterServiceImpl#addMeter(MeterDTO, BigInteger)}
      */
     @Test
     public void addMeterTest() {
 
-        Meter requestMeter = new Meter("meter1");
+        MeterDTO requestMeterDTO = new MeterDTO("meter1");
 
         Meter mockResultMeter = new Meter("meter1");
         mockResultMeter.setId(BigInteger.valueOf(1));
@@ -83,21 +99,21 @@ public class MeterServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter);
 
-        Meter meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        MeterDTO meterResponseDTO = meterService.addMeter(requestMeterDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result meter response should not be null ", meterResponse);
+        Assert.assertNotNull("Result meter response should not be null ", meterResponseDTO);
 
-        MeterAssertions.execute(mockResultMeter, meterResponse);
+        MeterAssertions.execute(meterMapperService.toMeterDTO(mockResultMeter), meterResponseDTO);
 
     }
 
     /**
-     * Update meter unit test for {@link MeterServiceImpl#updateMeter(Meter, BigInteger)}
+     * Update meter unit test for {@link MeterServiceImpl#updateMeter(MeterDTO, BigInteger)}
      */
     @Test
     public void updateMeterTest() {
 
-        Meter requestMeter = new Meter("meter1");
+        MeterDTO requestMeterDTO = new MeterDTO("meter1");
 
         Meter mockResultMeter = new Meter("meter1");
         mockResultMeter.setId(BigInteger.valueOf(1));
@@ -105,26 +121,26 @@ public class MeterServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Client(BigInteger.valueOf(1))));
         Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter);
 
-        Meter meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        MeterDTO meterResponseDTO = meterService.addMeter(requestMeterDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result meter response should not be null ", meterResponse);
+        Assert.assertNotNull("Result meter response should not be null ", meterResponseDTO);
 
-        MeterAssertions.execute(mockResultMeter, meterResponse);
+        MeterAssertions.execute(meterMapperService.toMeterDTO(mockResultMeter), meterResponseDTO);
 
-        requestMeter.setName("meter1_updated");
-        requestMeter.setId(meterResponse.getId());
+        requestMeterDTO.setName("meter1_updated");
+        requestMeterDTO.setId(meterResponseDTO.getId());
 
         Meter mockResultMeter2 = new Meter("meter1_updated");
-        mockResultMeter2.setId(meterResponse.getId());
+        mockResultMeter2.setId(meterResponseDTO.getId());
 
         Mockito.when(meterRepository.findOne(any())).thenReturn(Optional.of(mockResultMeter));
         Mockito.when(meterRepository.save(any())).thenReturn(mockResultMeter2);
 
-        meterResponse = meterService.updateMeter(requestMeter, BigInteger.valueOf(1));
+        meterResponseDTO = meterService.updateMeter(requestMeterDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result meter response should not be null ", meterResponse);
+        Assert.assertNotNull("Result meter response should not be null ", meterResponseDTO);
 
-        MeterAssertions.execute(mockResultMeter2, meterResponse);
+        MeterAssertions.execute(meterMapperService.toMeterDTO(mockResultMeter2), meterResponseDTO);
 
     }
 
@@ -144,7 +160,7 @@ public class MeterServiceTest {
 
         Mockito.when(meterRepository.findAll(any(Example.class))).thenReturn(meterList);
 
-        List<Meter> resultMeterList = meterService.getMeters(null);
+        List<MeterDTO> resultMeterList = meterService.getMeters(null);
 
         Assert.assertNotNull(resultMeterList);
         Assert.assertEquals(2, resultMeterList.size());
@@ -157,16 +173,16 @@ public class MeterServiceTest {
     @Test
     public void addMeterInexistentClientTest() {
 
-        Meter requestMeter = new Meter("meter1");
+        MeterDTO requestMeterDTO = new MeterDTO("meter1");
 
         Meter mockResultMeter = new Meter("meter1");
         mockResultMeter.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
-        Mockito.when(meterRepository.save(requestMeter)).thenThrow(DataIntegrityViolationException.class);
+        Mockito.when(meterRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         try {
-            meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+            meterService.addMeter(requestMeterDTO, BigInteger.valueOf(1));
         } catch (ClientNotFoundException cnfe) {
             Assert.assertNotNull("Client exception should be thrown ", cnfe);
 

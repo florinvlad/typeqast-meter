@@ -1,4 +1,4 @@
-package typeqast.business;
+package typeqast.business.processor;
 
 import typeqast.entities.Reading;
 

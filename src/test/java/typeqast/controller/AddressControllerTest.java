@@ -20,6 +20,7 @@ import org.springframework.util.MultiValueMap;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Address;
+import typeqast.entities.dto.AddressDTO;
 import typeqast.service.AddressService;
 import typeqast.util.assertions.AddressAssertions;
 
@@ -48,7 +49,7 @@ public class AddressControllerTest {
     @Test
     public void addAddressesTest() throws Exception {
 
-        Address mockAddress = new Address("country1", "city1", "street1", 1);
+        AddressDTO mockAddress = new AddressDTO("country1", "city1", "street1", 1);
 
         String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
 
@@ -64,7 +65,7 @@ public class AddressControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        Address responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
+        AddressDTO responseAddress = new ObjectMapper().readValue(responseBodyString, AddressDTO.class);
 
         AddressAssertions.execute(mockAddress, responseAddress);
 
@@ -73,7 +74,7 @@ public class AddressControllerTest {
     @Test
     public void updateAddressTest() throws Exception {
 
-        Address mockAddress = new Address("country1", "city1", "street1", 1);
+        AddressDTO mockAddress = new AddressDTO("country1", "city1", "street1", 1);
 
         String addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
 
@@ -89,11 +90,11 @@ public class AddressControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        Address responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
+        AddressDTO responseAddress = new ObjectMapper().readValue(responseBodyString, AddressDTO.class);
 
         AddressAssertions.execute(mockAddress, responseAddress);
 
-        mockAddress = new Address("country1_updated", "city1_updated", "street1_updated", 2);
+        mockAddress = new AddressDTO("country1_updated", "city1_updated", "street1_updated", 2);
         mockAddress.setId(BigInteger.valueOf(1));
 
         addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
@@ -109,7 +110,7 @@ public class AddressControllerTest {
 
         Assert.assertNotNull(responseBodyString);
 
-        responseAddress = new ObjectMapper().readValue(responseBodyString, Address.class);
+        responseAddress = new ObjectMapper().readValue(responseBodyString, AddressDTO.class);
 
         AddressAssertions.execute(mockAddress, responseAddress);
 
@@ -120,12 +121,12 @@ public class AddressControllerTest {
     public void getAddressesTest() throws Exception {
         RequestBuilder requestBuilder = (get(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON));
 
-        Address address = new Address("country1", "city1", "street1", 1);
+        AddressDTO address = new AddressDTO("country1", "city1", "street1", 1);
 
-        List<Address> addressList = new ArrayList<>();
+        List<AddressDTO> addressList = new ArrayList<>();
         addressList.add(address);
 
-        address = new Address("country2", "city2", "street2", 2);
+        address = new AddressDTO("country2", "city2", "street2", 2);
         addressList.add(address);
 
         given(mockAddressService.getAddresses(any())).willReturn(addressList);

@@ -1,5 +1,6 @@
 package typeqast.entities.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import typeqast.entities.Client;
 import typeqast.entities.Reading;
 
@@ -10,11 +11,19 @@ public class MeterDTO {
 
     private BigInteger id;
 
+    @JsonIgnore
     private Client client;
 
     private List<Reading> readings;
 
     private String name;
+
+    public MeterDTO(String name) {
+        this.name = name;
+    }
+
+    public MeterDTO() {
+    }
 
     public BigInteger getId() {
         return id;

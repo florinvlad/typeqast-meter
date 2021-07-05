@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RestEndpoints;
-import typeqast.entities.Client;
+import typeqast.entities.dto.ClientDTO;
 import typeqast.service.ClientService;
 
 import java.util.List;
@@ -23,31 +23,31 @@ public class ClientController {
     /**
      * Add new client
      *
-     * @param client request body as json
+     * @param clientDTO request body as json
      * @return
      */
     @PostMapping(RestEndpoints.CLIENTS)
-    public ResponseEntity<Client> addClient(@RequestBody Client client) {
+    public ResponseEntity<ClientDTO> addClient(@RequestBody ClientDTO clientDTO) {
 
         logger.info("Received create client request");
 
-        Client resultClient = clientService.addClient(client);
+        ClientDTO resultClientDTO = clientService.addClient(clientDTO);
 
-        return new ResponseEntity<>(resultClient, HttpStatus.CREATED);
+        return new ResponseEntity<>(resultClientDTO, HttpStatus.CREATED);
     }
 
     /**
      * Update existing client
      *
-     * @param client json body
+     * @param clientDTO json body
      * @return
      */
     @PutMapping(RestEndpoints.CLIENTS)
-    public ResponseEntity<Object> updateClient(@RequestBody Client client) {
+    public ResponseEntity<ClientDTO> updateClient(@RequestBody ClientDTO clientDTO) {
 
         logger.info("Received update client request");
 
-        Client resultClient = clientService.updateClient(client);
+        ClientDTO resultClient = clientService.updateClient(clientDTO);
 
         return new ResponseEntity<>(resultClient, HttpStatus.OK);
 
@@ -59,10 +59,10 @@ public class ClientController {
      * @return
      */
     @GetMapping(RestEndpoints.CLIENTS)
-    public ResponseEntity<List<Client>> getClients() {
+    public ResponseEntity<List<ClientDTO>> getClients() {
         logger.info("Received get client request");
 
-        List<Client> clientList = clientService.getClients();
+        List<ClientDTO> clientList = clientService.getClients();
 
         return new ResponseEntity<>(clientList, HttpStatus.OK);
     }

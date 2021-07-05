@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.ReadingDTO;
 import typeqast.service.ReadingService;
 
 import java.math.BigInteger;
@@ -27,17 +28,17 @@ public class ReadingController {
     /**
      * Add new reading to existing meter
      *
-     * @param reading json body
+     * @param readingDTO json body
      * @param meterId id of meter
      * @return
      */
     @PostMapping(RestEndpoints.READINGS)
-    public ResponseEntity<Reading> addReading(@RequestBody Reading reading, @RequestParam(name = RequestParams.METER_ID) BigInteger meterId) {
+    public ResponseEntity<ReadingDTO> addReading(@RequestBody ReadingDTO readingDTO, @RequestParam(name = RequestParams.METER_ID) BigInteger meterId) {
         logger.info("Received add reading request");
 
-        Reading resultReading = readingService.addReading(reading, meterId);
+        ReadingDTO resultReadingDTO = readingService.addReading(readingDTO, meterId);
 
-        return new ResponseEntity<>(resultReading, HttpStatus.CREATED);
+        return new ResponseEntity<>(resultReadingDTO, HttpStatus.CREATED);
 
     }
 
@@ -48,10 +49,10 @@ public class ReadingController {
      * @return
      */
     @GetMapping(RestEndpoints.READINGS)
-    public ResponseEntity<List<Reading>> getReadings() {
+    public ResponseEntity<List<ReadingDTO>> getReadings() {
         logger.info("Received get readings request");
 
-        List<Reading> readings = readingService.getReadings();
+        List<ReadingDTO> readings = readingService.getReadings();
 
         return new ResponseEntity<>(readings, HttpStatus.OK);
     }

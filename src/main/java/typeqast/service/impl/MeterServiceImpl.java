@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import typeqast.business.ReadingProcessor;
+import typeqast.business.processor.ReadingProcessor;
+import typeqast.business.transformer.MeterMapperService;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.MeterDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.entities.exception.MeterNotFoundException;
 import typeqast.repository.ClientRepository;
@@ -18,6 +20,7 @@ import typeqast.repository.MeterRepository;
 import typeqast.service.MeterService;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,11 +42,14 @@ public class MeterServiceImpl implements MeterService {
     @Autowired
     private ClientRepository clientRepository;
 
+    @Autowired
+    private MeterMapperService meterMapperService;
+
     /**
-     * Implementation for {@link MeterService#addMeter(Meter, BigInteger)}
+     * Implementation for {@link MeterService#addMeter(MeterDTO, BigInteger)}
      */
     @Override
-    public Meter addMeter(Meter meter, BigInteger clientId) throws ClientNotFoundException {
+    public MeterDTO addMeter(MeterDTO meterDTO, BigInteger clientId) throws ClientNotFoundException {
 
         logger.info("Received add meter request");
 
@@ -55,25 +61,22 @@ public class MeterServiceImpl implements MeterService {
             throw new ClientNotFoundException();
         }
 
-        saveMeter = new Meter(meter.getName());
+        saveMeter = new Meter(meterDTO.getName());
         saveMeter.setClient(resultClient.get());
         saveMeter = meterRepository.save(saveMeter);
 
-
-        return saveMeter;
+        return meterMapperService.toMeterDTO(saveMeter);
     }
 
     /**
-     * Implementation for {@link MeterService#updateMeter(Meter, BigInteger)}
+     * Implementation for {@link MeterService#updateMeter(MeterDTO, BigInteger)}
      */
     @Override
-    public Meter updateMeter(Meter updateMeter, BigInteger clientId) throws ClientNotFoundException, MeterNotFoundException {
+    public MeterDTO updateMeter(MeterDTO updateMeterDTO, BigInteger clientId) throws ClientNotFoundException, MeterNotFoundException {
 
         logger.info("Received update meter request");
 
-        BigInteger meterId = updateMeter.getId();
-
-        Meter saveMeter;
+        BigInteger meterId = updateMeterDTO.getId();
 
         Optional<Client> readClient = clientRepository.findOne(Example.of(new Client(clientId)));
         Optional<Meter> readMetter = meterRepository.findOne(Example.of(new Meter(meterId)));
@@ -86,24 +89,32 @@ public class MeterServiceImpl implements MeterService {
             throw new ClientNotFoundException();
         }
 
-        updateMeter.setClient(readClient.get());
-        saveMeter = meterRepository.save(updateMeter);
+        updateMeterDTO.setClient(readClient.get());
 
+        Meter saveMeter = meterMapperService.toMeter(updateMeterDTO);
 
-        return saveMeter;
+        saveMeter = meterRepository.save(saveMeter);
+
+        return meterMapperService.toMeterDTO(saveMeter);
     }
 
     /**
      * Implementation for {@link MeterService#getMeters(BigInteger)}
      */
     @Override
-    public List<Meter> getMeters(BigInteger meterId) {
+    public List<MeterDTO> getMeters(BigInteger meterId) {
 
         logger.info("Received get meters request");
 
         List<Meter> meters = meterRepository.findAll(Example.of(new Meter(meterId)));
 
-        return meters;
+        List<MeterDTO> meterDTOList = new ArrayList<>();
+
+        for (Meter meter:meters){
+            meterDTOList.add(meterMapperService.toMeterDTO(meter));
+        }
+
+        return meterDTOList;
     }
 
     /**

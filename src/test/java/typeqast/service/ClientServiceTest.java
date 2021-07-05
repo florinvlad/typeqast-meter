@@ -9,10 +9,13 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
+import typeqast.business.transformer.ClientMapperService;
+import typeqast.business.transformer.impl.ClientMapperServiceImpl;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.ClientDTO;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
@@ -44,6 +47,19 @@ public class ClientServiceTest {
 
     }
 
+    @TestConfiguration
+    static class MapperServiceImplTestContextConfiguration {
+
+        @Bean
+        public ClientMapperService clientMapperService() {
+            return new ClientMapperServiceImpl();
+        }
+
+    }
+
+    @Autowired
+    private ClientMapperService clientMapperService;
+
     @Autowired
     private ClientService clientService;
 
@@ -60,58 +76,58 @@ public class ClientServiceTest {
     private ReadingRepository readingRepository;
 
     /**
-     * Unit test for {@link ClientServiceImpl#addClient(Client)}
+     * Unit test for {@link ClientServiceImpl#addClient(ClientDTO)}
      */
     @Test
     public void addClientTest() {
 
-        Client requestClient = new Client("name1");
+        ClientDTO requestClientDTO = new ClientDTO("name1");
 
         Client mockClient = new Client("name1");
         mockClient.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        Client resultClient = clientService.addClient(requestClient);
+        ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClient);
+        Assert.assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(mockClient, resultClient);
+        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
 
     }
 
     /**
-     * Unit test for {@link ClientServiceImpl#updateClient(Client)}
+     * Unit test for {@link ClientServiceImpl#updateClient(ClientDTO)}
      */
     @Test
     public void updateClientTest() {
 
-        Client requestClient = new Client("name1");
+        ClientDTO requestClientDTO = new ClientDTO("name1");
 
         Client mockClient = new Client("name1");
         mockClient.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        Client resultClient = clientService.addClient(requestClient);
+        ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClient);
+        Assert.assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(mockClient, resultClient);
+        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
 
-        requestClient.setName("name2");
-        requestClient.setId(resultClient.getId());
+        requestClientDTO.setName("name2");
+        requestClientDTO.setId(resultClientDTO.getId());
 
         mockClient.setName("name2");
 
         Mockito.when(clientRepository.findOne(any())).thenReturn(Optional.of(mockClient));
-        Mockito.when(clientRepository.save(requestClient)).thenReturn(mockClient);
+        Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        resultClient = clientService.updateClient(requestClient);
+        resultClientDTO = clientService.updateClient(requestClientDTO);
 
-        Assert.assertNotNull("client response should not be null ", resultClient);
+        Assert.assertNotNull("client response should not be null ", resultClientDTO);
 
-        ClientAssertions.execute(mockClient, resultClient);
+        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
 
 
     }
@@ -131,7 +147,7 @@ public class ClientServiceTest {
 
         Mockito.when(clientRepository.findAll()).thenReturn(clientList);
 
-        List<Client> resultClientList = clientService.getClients();
+        List<ClientDTO> resultClientList = clientService.getClients();
 
         Assert.assertNotNull(resultClientList);
         Assert.assertEquals(resultClientList.size(), 2);
@@ -145,8 +161,10 @@ public class ClientServiceTest {
     @Test
     public void addClientComprehensiveTest() {
 
-        Client client = new Client("client_name1");
-        client.setId(BigInteger.valueOf(1));
+        ClientDTO requestClientDTO = new ClientDTO("name1");
+
+        Client mockClient = new Client("client_name1");
+        mockClient.setId(BigInteger.valueOf(1));
 
         Meter meter = new Meter("meter_name1");
         meter.setId(BigInteger.valueOf(2));
@@ -158,22 +176,22 @@ public class ClientServiceTest {
         reading.setId(BigInteger.valueOf(4));
 
         meter.addReading(reading);
-        client.setMeter(meter);
-        client.setAddress(address);
+        mockClient.setMeter(meter);
+        mockClient.setAddress(address);
 
-        Mockito.when(clientRepository.save(any())).thenReturn(client);
+        Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        Client resultClient = clientService.addClient(client);
+        ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClient);
+        Assert.assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(client, resultClient);
+        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
 
-        Address resultAddress = resultClient.getAddress();
+        Address resultAddress = resultClientDTO.getAddress();
 
         AddressAssertions.execute(address, resultAddress);
 
-        Meter resultMeter = resultClient.getMeter();
+        Meter resultMeter = resultClientDTO.getMeter();
 
         MeterAssertions.execute(meter, resultMeter);
 
@@ -194,8 +212,10 @@ public class ClientServiceTest {
     @Test
     public void updateClientComprehensiveTest() {
 
-        Client client = new Client("client_name1");
-        client.setId(BigInteger.valueOf(1));
+        ClientDTO requestClientDTO = new ClientDTO("name1");
+
+        Client mockClient = new Client("name1");
+        mockClient.setId(BigInteger.valueOf(1));
 
         Meter meter = new Meter("meter_name1");
         meter.setId(BigInteger.valueOf(2));
@@ -207,22 +227,23 @@ public class ClientServiceTest {
         reading.setId(BigInteger.valueOf(4));
 
         meter.addReading(reading);
-        client.setMeter(meter);
-        client.setAddress(address);
 
-        Mockito.when(clientRepository.save(any())).thenReturn(client);
+        mockClient.setMeter(meter);
+        mockClient.setAddress(address);
 
-        Client resultClient = clientService.addClient(client);
+        Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        Assert.assertNotNull(resultClient);
+        ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        ClientAssertions.execute(client, resultClient);
+        Assert.assertNotNull(resultClientDTO);
 
-        Address resultAddress = resultClient.getAddress();
+        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+
+        Address resultAddress = resultClientDTO.getAddress();
 
         AddressAssertions.execute(address, resultAddress);
 
-        Meter resultMeter = resultClient.getMeter();
+        Meter resultMeter = resultClientDTO.getMeter();
 
         MeterAssertions.execute(meter, resultMeter);
 
@@ -235,8 +256,7 @@ public class ClientServiceTest {
 
         ReadingAssertions.execute(reading, resultReading);
 
-        client = new Client("client_name1_updated");
-        client.setId(BigInteger.valueOf(1));
+        mockClient.setName("client_name1_updated");
 
         meter = new Meter("meter_name1_updated");
         meter.setId(BigInteger.valueOf(2));
@@ -248,23 +268,23 @@ public class ClientServiceTest {
         reading.setId(BigInteger.valueOf(4));
 
         meter.addReading(reading);
-        client.setMeter(meter);
-        client.setAddress(address);
+        mockClient.setMeter(meter);
+        mockClient.setAddress(address);
 
-        Mockito.when(clientRepository.findOne(any())).thenReturn(Optional.of(client));
-        Mockito.when(clientRepository.save(any())).thenReturn(client);
+        Mockito.when(clientRepository.findOne(any())).thenReturn(Optional.of(mockClient));
+        Mockito.when(clientRepository.save(any())).thenReturn(mockClient);
 
-        resultClient = clientService.updateClient(client);
+        resultClientDTO = clientService.updateClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClient);
+        Assert.assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(client, resultClient);
+        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
 
-        resultAddress = resultClient.getAddress();
+        resultAddress = resultClientDTO.getAddress();
 
         AddressAssertions.execute(address, resultAddress);
 
-        resultMeter = resultClient.getMeter();
+        resultMeter = resultClientDTO.getMeter();
 
         MeterAssertions.execute(meter, resultMeter);
 

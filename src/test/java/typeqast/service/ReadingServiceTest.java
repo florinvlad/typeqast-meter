@@ -10,8 +10,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
+import typeqast.business.transformer.ReadingMapperService;
+import typeqast.business.transformer.impl.ReadingMapperServiceImpl;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.dto.ReadingDTO;
 import typeqast.entities.exception.MeterNotFoundException;
 import typeqast.repository.MeterRepository;
 import typeqast.repository.ReadingRepository;
@@ -39,6 +42,19 @@ public class ReadingServiceTest {
 
     }
 
+    @TestConfiguration
+    static class MapperServiceImplTestContextConfiguration {
+
+        @Bean
+        public ReadingMapperService readingMapperService() {
+            return new ReadingMapperServiceImpl();
+        }
+
+    }
+
+    @Autowired
+    private ReadingMapperService readingMapperService;
+
     @Autowired
     private ReadingService readingService;
 
@@ -49,12 +65,12 @@ public class ReadingServiceTest {
     private MeterRepository meterRepository;
 
     /**
-     * Add reading unit test for {@link ReadingServiceImpl#addReading(Reading, BigInteger)}
+     * Add reading unit test for {@link ReadingServiceImpl#addReading(ReadingDTO, BigInteger)}
      */
     @Test
     public void addReadingTest() {
 
-        Reading requestReading = new Reading(2001, Month.APRIL, 1234L);
+        ReadingDTO requestReadingDTO = new ReadingDTO(2001, Month.APRIL, 1234L);
 
         Reading mockResultReading = new Reading(2001, Month.APRIL, 1234L);
         mockResultReading.setId(BigInteger.valueOf(1));
@@ -62,46 +78,46 @@ public class ReadingServiceTest {
         Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Meter(BigInteger.valueOf(1))));
         Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
 
-        Reading readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
+        ReadingDTO readingResponseDTO = readingService.addReading(requestReadingDTO, BigInteger.valueOf(1));
 
-        ReadingAssertions.execute(mockResultReading, readingResponse);
+        ReadingAssertions.execute(readingMapperService.toReadingDTO(mockResultReading), readingResponseDTO);
 
     }
 
     /**
-     * Update reading unit test for {@link ReadingServiceImpl#updateReading(Reading, BigInteger)}
+     * Update reading unit test for {@link ReadingServiceImpl#updateReading(ReadingDTO, BigInteger)}
      */
     @Test
     public void updateReadingTest() {
 
-        Reading requestReading = new Reading(2001, Month.APRIL, 1234L);
+        ReadingDTO requestReading = new ReadingDTO(2001, Month.APRIL, 1234L);
 
         Reading mockResultReading = new Reading(2001, Month.APRIL, 1234L);
         mockResultReading.setId(BigInteger.valueOf(1));
 
         Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.of(new Meter(BigInteger.valueOf(1))));
-        Mockito.when(readingRepository.save(requestReading)).thenReturn(mockResultReading);
+        Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
 
-        Reading readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
+        ReadingDTO readingResponseDTO = readingService.addReading(requestReading, BigInteger.valueOf(1));
 
-        ReadingAssertions.execute(mockResultReading, readingResponse);
+        ReadingAssertions.execute(readingMapperService.toReadingDTO(mockResultReading), readingResponseDTO);
 
         requestReading.setYear(2002);
         requestReading.setMonth(Month.MAY);
         requestReading.setValue(2345L);
-        requestReading.setId(readingResponse.getId());
+        requestReading.setId(readingResponseDTO.getId());
 
         Reading mockResultReading2 = new Reading(2002, Month.MAY, 2345L);
-        mockResultReading2.setId(readingResponse.getId());
+        mockResultReading2.setId(readingResponseDTO.getId());
 
         Mockito.when(readingRepository.findOne(any())).thenReturn(Optional.of(mockResultReading));
-        Mockito.when(readingRepository.save(requestReading)).thenReturn(mockResultReading2);
+        Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading2);
 
-        readingResponse = readingService.updateReading(requestReading, BigInteger.valueOf(1));
+        readingResponseDTO = readingService.updateReading(requestReading, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result reading should not be null ", readingResponse);
+        Assert.assertNotNull("Result reading should not be null ", readingResponseDTO);
 
-        ReadingAssertions.execute(mockResultReading2, readingResponse);
+        ReadingAssertions.execute(readingMapperService.toReadingDTO(mockResultReading2), readingResponseDTO);
 
     }
 
@@ -122,10 +138,10 @@ public class ReadingServiceTest {
 
         Mockito.when(readingRepository.findAll()).thenReturn(readingList);
 
-        List<Reading> resultReadingList = readingService.getReadings();
+        List<ReadingDTO> resultReadingDTOList = readingService.getReadings();
 
-        Assert.assertNotNull(resultReadingList);
-        Assert.assertEquals(2, resultReadingList.size());
+        Assert.assertNotNull(resultReadingDTOList);
+        Assert.assertEquals(2, resultReadingDTOList.size());
 
     }
 
@@ -135,7 +151,7 @@ public class ReadingServiceTest {
     @Test
     public void addReadingInexistentMeterTest() {
 
-        Reading requestReading = new Reading(2001, Month.APRIL, 1234L);
+        ReadingDTO requestReadingDTO = new ReadingDTO(2001, Month.APRIL, 1234L);
 
         Reading mockResultReading = new Reading(2001, Month.APRIL, 1234L);
         mockResultReading.setId(BigInteger.valueOf(1));
@@ -144,7 +160,7 @@ public class ReadingServiceTest {
         Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
 
         try {
-            readingService.addReading(requestReading, BigInteger.valueOf(1));
+            readingService.addReading(requestReadingDTO, BigInteger.valueOf(1));
         } catch (MeterNotFoundException mnfe) {
             Assert.assertNotNull("Exception not thrown", mnfe);
         }

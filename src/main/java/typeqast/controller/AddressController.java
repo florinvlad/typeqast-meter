@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
-import typeqast.entities.Address;
+import typeqast.entities.dto.AddressDTO;
 import typeqast.service.AddressService;
 
 import java.math.BigInteger;
@@ -30,11 +30,11 @@ public class AddressController {
      * @return
      */
     @PostMapping(RestEndpoints.ADDRESSES)
-    public ResponseEntity<Address> addAddress(@RequestBody Address address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId) {
+    public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId) {
 
         logger.info("Received create addresses request");
 
-        Address resultAddress = addressService.addAddress(address, clientId);
+        AddressDTO resultAddress = addressService.addAddress(address, clientId);
 
         return new ResponseEntity<>(resultAddress, HttpStatus.CREATED);
 
@@ -49,13 +49,13 @@ public class AddressController {
      * @return
      */
     @PutMapping(RestEndpoints.ADDRESSES)
-    public ResponseEntity<Address> updateAddress(@RequestBody Address address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(name = RequestParams.ADDRESS_ID) BigInteger addressId) {
+    public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(name = RequestParams.ADDRESS_ID) BigInteger addressId) {
 
         logger.info("Received update addresses request");
 
         address.setId(addressId);
 
-        Address resultAddress = addressService.updateAddress(address, clientId);
+        AddressDTO resultAddress = addressService.updateAddress(address, clientId);
 
         return new ResponseEntity<>(resultAddress, HttpStatus.OK);
 
@@ -68,10 +68,10 @@ public class AddressController {
      * @return
      */
     @GetMapping(RestEndpoints.ADDRESSES)
-    public ResponseEntity<List<Address>> getAddresses(@RequestParam(name = RequestParams.ID, required = false) BigInteger id) {
+    public ResponseEntity<List<AddressDTO>> getAddresses(@RequestParam(name = RequestParams.ID, required = false) BigInteger id) {
         logger.info("Received get address request");
 
-        List<Address> addresses = addressService.getAddresses(id);
+        List<AddressDTO> addresses = addressService.getAddresses(id);
 
         return new ResponseEntity<>(addresses, HttpStatus.OK);
     }

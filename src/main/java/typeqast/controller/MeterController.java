@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.AggregateReading;
-import typeqast.entities.Meter;
+import typeqast.entities.dto.MeterDTO;
 import typeqast.service.MeterService;
 
 import javax.validation.constraints.Max;
@@ -31,14 +31,14 @@ public class MeterController {
     /**
      * Add new meter to existing client
      *
-     * @param meter    json body
+     * @param meterDTO    json body
      * @param clientId
      * @return
      */
     @PostMapping(RestEndpoints.METERS)
-    public ResponseEntity<Meter> addMeter(@RequestBody Meter meter, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId) {
+    public ResponseEntity<MeterDTO> addMeter(@RequestBody MeterDTO meterDTO, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId) {
 
-        Meter resultMeter = meterService.addMeter(meter, clientId);
+        MeterDTO resultMeter = meterService.addMeter(meterDTO, clientId);
 
         return new ResponseEntity<>(resultMeter, HttpStatus.CREATED);
 
@@ -48,16 +48,16 @@ public class MeterController {
     /**
      * Update meter
      *
-     * @param meter json body
+     * @param meterDTO json body
      * @return
      */
     @PutMapping(RestEndpoints.METERS)
-    public ResponseEntity<Meter> updateMeter(@RequestBody Meter meter, @RequestParam(RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(RequestParams.METER_ID) BigInteger meterId) {
+    public ResponseEntity<MeterDTO> updateMeter(@RequestBody MeterDTO meterDTO, @RequestParam(RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(RequestParams.METER_ID) BigInteger meterId) {
 
-        meter.setId(meterId);
-        Meter resultMeter = meterService.updateMeter(meter, clientId);
+        meterDTO.setId(meterId);
+        MeterDTO resultMeterDTO = meterService.updateMeter(meterDTO, clientId);
 
-        return new ResponseEntity<>(resultMeter, HttpStatus.OK);
+        return new ResponseEntity<>(resultMeterDTO, HttpStatus.OK);
 
     }
 
@@ -68,10 +68,10 @@ public class MeterController {
      * @return
      */
     @GetMapping(RestEndpoints.METERS)
-    public ResponseEntity<List<Meter>> getMeters(@RequestParam(name = RequestParams.ID, required = false) BigInteger meterId) {
+    public ResponseEntity<List<MeterDTO>> getMeters(@RequestParam(name = RequestParams.ID, required = false) BigInteger meterId) {
         logger.info("Received get meters request");
 
-        List<Meter> meters = meterService.getMeters(meterId);
+        List<MeterDTO> meters = meterService.getMeters(meterId);
 
         return new ResponseEntity<>(meters, HttpStatus.OK);
     }
