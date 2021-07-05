@@ -13,7 +13,7 @@ public class Meter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "ID", columnDefinition = "bigint unsigned")
+    @Column(name = "id", columnDefinition = "bigint unsigned")
     private BigInteger id;
 
     @JsonIgnore

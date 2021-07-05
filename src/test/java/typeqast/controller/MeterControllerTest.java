@@ -102,7 +102,9 @@ public class MeterControllerTest {
 
         meterAsString = new ObjectMapper().writeValueAsString(mockMeter);
 
-        requestBuilder = (put(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON).params(params).content(meterAsString));
+        params.add(RequestParams.METER_ID, String.valueOf(2));
+
+        requestBuilder = (put(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON).params(params).content(meterAsString).params(params));
 
         when(mockMeterService.updateMeter(any(), any())).thenReturn(mockMeter);
 

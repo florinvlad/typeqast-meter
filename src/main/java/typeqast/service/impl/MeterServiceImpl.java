@@ -11,6 +11,8 @@ import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.exception.ClientNotFoundException;
+import typeqast.entities.exception.MeterNotFoundException;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
 import typeqast.service.MeterService;
@@ -19,6 +21,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation for {@link MeterService}
+ */
 @Service
 public class MeterServiceImpl implements MeterService {
 
@@ -34,48 +39,63 @@ public class MeterServiceImpl implements MeterService {
     @Autowired
     private ClientRepository clientRepository;
 
+    /**
+     * Implementation for {@link MeterService#addMeter(Meter, BigInteger)}
+     */
     @Override
-    public Meter addMeter(Meter meter, BigInteger clientId) {
+    public Meter addMeter(Meter meter, BigInteger clientId) throws ClientNotFoundException {
 
         logger.info("Received add meter request");
 
-        Meter saveMeter = null;
+        Meter saveMeter;
 
         Optional<Client> resultClient = clientRepository.findOne(Example.of(new Client(clientId)));
 
-        if (resultClient.isPresent()) {
-            saveMeter = new Meter(meter.getName());
-            saveMeter.setClient(resultClient.get());
-            saveMeter = meterRepository.save(saveMeter);
+        if (!resultClient.isPresent()) {
+            throw new ClientNotFoundException();
         }
+
+        saveMeter = new Meter(meter.getName());
+        saveMeter.setClient(resultClient.get());
+        saveMeter = meterRepository.save(saveMeter);
+
 
         return saveMeter;
     }
 
+    /**
+     * Implementation for {@link MeterService#updateMeter(Meter, BigInteger)}
+     */
     @Override
-    public Meter updateMeter(Meter updateMeter, BigInteger clientId) {
+    public Meter updateMeter(Meter updateMeter, BigInteger clientId) throws ClientNotFoundException, MeterNotFoundException {
 
         logger.info("Received update meter request");
 
-        BigInteger id = updateMeter.getId();
+        BigInteger meterId = updateMeter.getId();
 
-        Meter saveMeter = null;
+        Meter saveMeter;
 
-        if (id != null) {
-            Optional<Client> readClient = clientRepository.findOne(Example.of(new Client(clientId)));
-            Optional<Meter> readMetter = meterRepository.findOne(Example.of(new Meter(id)));
+        Optional<Client> readClient = clientRepository.findOne(Example.of(new Client(clientId)));
+        Optional<Meter> readMetter = meterRepository.findOne(Example.of(new Meter(meterId)));
 
-            if (readMetter.isPresent() && (readClient.isPresent())) {
-
-                updateMeter.setClient(readClient.get());
-                saveMeter = meterRepository.save(updateMeter);
-
-            }
+        if (!readMetter.isPresent()) {
+            throw new MeterNotFoundException();
         }
+
+        if (!readClient.isPresent()) {
+            throw new ClientNotFoundException();
+        }
+
+        updateMeter.setClient(readClient.get());
+        saveMeter = meterRepository.save(updateMeter);
+
 
         return saveMeter;
     }
 
+    /**
+     * Implementation for {@link MeterService#getMeters(BigInteger)}
+     */
     @Override
     public List<Meter> getMeters(BigInteger meterId) {
 
@@ -86,6 +106,9 @@ public class MeterServiceImpl implements MeterService {
         return meters;
     }
 
+    /**
+     * Implementation for {@link MeterService#getAggregateReadings(Integer, BigInteger)}
+     */
     @Override
     public AggregateReading getAggregateReadings(Integer year, BigInteger meterId) {
 

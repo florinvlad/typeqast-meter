@@ -3,7 +3,6 @@ package typeqast.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -41,11 +40,7 @@ public class MeterController {
 
         Meter resultMeter = meterService.addMeter(meter, clientId);
 
-        if (resultMeter != null) {
-            return new ResponseEntity<>(resultMeter, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(resultMeter, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(resultMeter, HttpStatus.CREATED);
 
     }
 
@@ -57,15 +52,13 @@ public class MeterController {
      * @return
      */
     @PutMapping(RestEndpoints.METERS)
-    public ResponseEntity<Meter> updateMeter(@RequestBody Meter meter, @RequestParam(RequestParams.CLIENT_ID) BigInteger clientId) {
+    public ResponseEntity<Meter> updateMeter(@RequestBody Meter meter, @RequestParam(RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(RequestParams.METER_ID) BigInteger meterId) {
 
+        meter.setId(meterId);
         Meter resultMeter = meterService.updateMeter(meter, clientId);
 
-        if (resultMeter != null) {
-            return new ResponseEntity<>(resultMeter, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(resultMeter, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(resultMeter, HttpStatus.OK);
+
     }
 
     /**
@@ -98,11 +91,6 @@ public class MeterController {
         AggregateReading aggregateReadingResult = meterService.getAggregateReadings(year, meterId);
 
         return new ResponseEntity<>(aggregateReadingResult, HttpStatus.OK);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> onValidationError(Exception ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

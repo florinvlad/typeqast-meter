@@ -64,7 +64,7 @@ public class AddressRepositoryTest {
     }
 
     @Test
-    public void getAddresssTest() {
+    public void getAddressesTest() {
 
         Address address = new Address("country1", "city1", "street1", 1);
 

@@ -9,13 +9,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
-import typeqast.entities.AggregateReading;
 import typeqast.entities.Reading;
 import typeqast.service.ReadingService;
 
-import javax.validation.ConstraintViolationException;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import java.math.BigInteger;
 import java.util.List;
 
@@ -60,8 +56,4 @@ public class ReadingController {
         return new ResponseEntity<>(readings, HttpStatus.OK);
     }
 
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> onValidationError(Exception ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-    }
 }

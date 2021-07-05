@@ -12,6 +12,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
+import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
 import typeqast.service.impl.AddressServiceImpl;
@@ -47,9 +48,7 @@ public class AddressServiceTest {
     private ClientRepository clientRepository;
 
     /**
-     *
      * Add address unit test for {@link AddressServiceImpl#addAddress(Address, BigInteger)}
-     * 
      */
     @Test
     public void addAddressTest() {
@@ -71,9 +70,7 @@ public class AddressServiceTest {
     }
 
     /**
-     *
      * Update address unit test for {@link AddressServiceImpl#updateAddress(Address, BigInteger)}
-     *
      */
     @Test
     public void updateAddressTest() {
@@ -110,9 +107,7 @@ public class AddressServiceTest {
     }
 
     /**
-     * 
      * Get addresses unit test for {@link AddressServiceImpl#getAddresses(BigInteger)}
-     * 
      */
 
     @Test
@@ -147,9 +142,11 @@ public class AddressServiceTest {
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
 
-        Address address = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
-
-        Assert.assertNull(" address object should be null ", address);
+        try {
+            addressService.addAddress(requestAddress, BigInteger.valueOf(1));
+        } catch (ClientNotFoundException cnfe) {
+            Assert.assertNotNull(cnfe);
+        }
 
     }
 

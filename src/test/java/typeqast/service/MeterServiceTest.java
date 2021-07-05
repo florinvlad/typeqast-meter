@@ -18,6 +18,7 @@ import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
 import typeqast.service.impl.MeterServiceImpl;
@@ -164,9 +165,13 @@ public class MeterServiceTest {
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
         Mockito.when(meterRepository.save(requestMeter)).thenThrow(DataIntegrityViolationException.class);
 
-        Meter meterResponse = meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        try {
+            meterService.addMeter(requestMeter, BigInteger.valueOf(1));
+        } catch (ClientNotFoundException cnfe) {
+            Assert.assertNotNull("Client exception should be thrown ", cnfe);
 
-        Assert.assertNull("Result meter response should be null ", meterResponse);
+        }
+
 
     }
 

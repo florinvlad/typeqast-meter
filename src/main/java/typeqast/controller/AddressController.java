@@ -3,7 +3,6 @@ package typeqast.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,36 +36,28 @@ public class AddressController {
 
         Address resultAddress = addressService.addAddress(address, clientId);
 
-        if (resultAddress != null) {
-            return new ResponseEntity<>(resultAddress, HttpStatus.CREATED);
-
-        } else {
-            return new ResponseEntity<>(resultAddress, HttpStatus.NOT_FOUND);
-        }
-
+        return new ResponseEntity<>(resultAddress, HttpStatus.CREATED);
 
     }
 
     /**
      * Update address for an existing client
      *
-     * @param address  json body
-     * @param clientId id of client
+     * @param address   json body
+     * @param clientId  id of client
+     * @param addressId id of address
      * @return
      */
     @PutMapping(RestEndpoints.ADDRESSES)
-    public ResponseEntity<Address> updateAddress(@RequestBody Address address, BigInteger clientId) {
+    public ResponseEntity<Address> updateAddress(@RequestBody Address address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(name = RequestParams.ADDRESS_ID) BigInteger addressId) {
 
         logger.info("Received update addresses request");
 
+        address.setId(addressId);
+
         Address resultAddress = addressService.updateAddress(address, clientId);
 
-        if (resultAddress != null) {
-            return new ResponseEntity<>(resultAddress, HttpStatus.OK);
-
-        } else {
-            return new ResponseEntity<>(resultAddress, HttpStatus.NOT_FOUND);
-        }
+        return new ResponseEntity<>(resultAddress, HttpStatus.OK);
 
     }
 
@@ -83,11 +74,6 @@ public class AddressController {
         List<Address> addresses = addressService.getAddresses(id);
 
         return new ResponseEntity<>(addresses, HttpStatus.OK);
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> onValidationError(Exception ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -12,24 +12,26 @@ Prerequisites for running the application:
 
 4. Add JAVA_HOME and MVN_HOME to environment variables, and git executable folder, maven executable folder to Path
 
-
-After you have installed the required software open a command line terminal and go to a folder where 
-you want to download the project (Example: D:\Projects) . Alternatively if you have installed an IDE (such as Eclipse or IntelliJ) you can import the project directly there.
+After you have installed the required software open a command line terminal and go to a folder where you want to
+download the project (Example: D:\Projects) . Alternatively if you have installed an IDE (such as Eclipse or IntelliJ)
+you can import the project directly there.
 
 For the command line terminal version do the following steps:
+
 1. Go to D:\Projects
 2. run the following command there :
-git clone https://github.com/florinvlad/typeqast-meter
-3. After the project finished downloading go to the project folder (cd typecast-meter) and run the following command (without the quotes):
-"mvn spring-boot:run"
-   
+   git clone https://github.com/florinvlad/typeqast-meter
+3. After the project finished downloading go to the project folder (cd typecast-meter) and run the following command (
+   without the quotes):
+   "mvn spring-boot:run"
+
 ## API capabilities
 
-###REST Endpoints:
+### REST Endpoints:
 
-###/clients
+### /clients
 
-available methods: 
+available methods:
 
     GET returns a list of clients registered in the application
        (no parameters) 
@@ -47,8 +49,7 @@ available methods:
             "name": "client_name1"
             }
 
-
-###/addresses
+### /addresses
 
 available methods:
 
@@ -66,17 +67,16 @@ available methods:
       }
 
     PUT update existing client address
-      request parameters : client_id (mandatory)
+      request parameters : address_id (mandatory), client_id (mandatory)
       sample json body:
       {
-      "id": 4,
       "country": "country1",
       "city": "city1",
       "street": "street1",
       "number": 1
       }
 
-###/meters
+### /meters
 
 available methods:
 
@@ -91,17 +91,15 @@ available methods:
       }
 
     PUT update existing client meter
-      request parameters : client_id (mandatory)
+      request parameters : client_id (mandatory), meter_id (mandatory)
       sample json body:
       {
-      "id": 17,
       "name":"newmeter"
       }
 
-
 (query params: year, month, value)
 
-###/readings
+### /readings
 
 available methods:
 
@@ -118,7 +116,7 @@ available methods:
          "value": 1
          }
 
-###/meters/aggregate
+### /meters/aggregate
 
 available methods:
 
@@ -129,13 +127,14 @@ You can download a collection of postman requests at the following URL:
 https://www.getpostman.com/collections/c0a9f011c1bc405102eb
 
 ## Database access
+
 1. Access this URL
-http://localhost:8080/h2-console
-   
-2. Use the following settings to connect to the database: 
- 
+   http://localhost:8080/h2-console
+
+2. Use the following settings to connect to the database:
+
    JDBC URL: jdbc:h2:mem:testdb
-   
+
    username : sa
-   
+
    password : password

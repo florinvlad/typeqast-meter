@@ -46,7 +46,7 @@ public class AddressControllerTest {
     private AddressService mockAddressService;
 
     @Test
-    public void addAddresssTest() throws Exception {
+    public void addAddressesTest() throws Exception {
 
         Address mockAddress = new Address("country1", "city1", "street1", 1);
 
@@ -98,7 +98,9 @@ public class AddressControllerTest {
 
         addressAsString = new ObjectMapper().writeValueAsString(mockAddress);
 
-        requestBuilder = (put(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).content(addressAsString));
+        params.add(RequestParams.ADDRESS_ID, String.valueOf(1));
+
+        requestBuilder = (put(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON).content(addressAsString).params(params));
 
         when(mockAddressService.updateAddress(any(), any())).thenReturn(mockAddress);
 
@@ -115,7 +117,7 @@ public class AddressControllerTest {
 
 
     @Test
-    public void getAddresssTest() throws Exception {
+    public void getAddressesTest() throws Exception {
         RequestBuilder requestBuilder = (get(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON));
 
         Address address = new Address("country1", "city1", "street1", 1);

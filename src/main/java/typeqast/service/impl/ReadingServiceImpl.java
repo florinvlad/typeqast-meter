@@ -7,6 +7,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.exception.MeterNotFoundException;
+import typeqast.entities.exception.ReadingNotFoundException;
 import typeqast.repository.MeterRepository;
 import typeqast.repository.ReadingRepository;
 import typeqast.service.ReadingService;
@@ -15,6 +17,9 @@ import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Implementation for {@link ReadingService}
+ */
 @Service
 public class ReadingServiceImpl implements ReadingService {
 
@@ -26,46 +31,61 @@ public class ReadingServiceImpl implements ReadingService {
     @Autowired
     private MeterRepository meterRepository;
 
+    /**
+     * Implementation for {@link ReadingService#addReading(Reading, BigInteger)}
+     */
     @Override
-    public Reading addReading(Reading reading, BigInteger meterId) {
+    public Reading addReading(Reading reading, BigInteger meterId) throws MeterNotFoundException {
 
         logger.info("Received add reading request");
 
-        Reading saveReading = null;
+        Reading saveReading;
 
         Optional<Meter> resultMeter = meterRepository.findOne(Example.of(new Meter(meterId)));
 
-        if (resultMeter.isPresent()) {
-            reading.setMeter(resultMeter.get());
-            saveReading = readingRepository.save(reading);
+        if (!resultMeter.isPresent()) {
+            throw new MeterNotFoundException();
         }
+
+        reading.setMeter(resultMeter.get());
+        saveReading = readingRepository.save(reading);
 
         return saveReading;
 
     }
 
+    /**
+     * Implementation for {@link ReadingService#updateReading(Reading, BigInteger)}
+     */
     @Override
-    public Reading updateReading(Reading reading, BigInteger meterId) {
+    public Reading updateReading(Reading reading, BigInteger meterId) throws MeterNotFoundException, ReadingNotFoundException {
 
         logger.info("Received update reading request");
 
-        Reading saveReading = null;
+        Reading saveReading;
 
         BigInteger id = reading.getId();
 
-        if (id != null) {
-            Optional<Reading> resultReading = readingRepository.findOne(Example.of(new Reading(id)));
-            Optional<Meter> resultMeter = meterRepository.findOne(Example.of(new Meter(meterId)));
+        Optional<Reading> resultReading = readingRepository.findOne(Example.of(new Reading(id)));
+        Optional<Meter> resultMeter = meterRepository.findOne(Example.of(new Meter(meterId)));
 
-            if (resultMeter.isPresent() && resultReading.isPresent()) {
-                reading.setMeter(resultMeter.get());
-                saveReading = readingRepository.save(reading);
-            }
+        if (!resultMeter.isPresent()) {
+            throw new MeterNotFoundException();
         }
+
+        if (!resultReading.isPresent()) {
+            throw new ReadingNotFoundException();
+        }
+
+        reading.setMeter(resultMeter.get());
+        saveReading = readingRepository.save(reading);
 
         return saveReading;
     }
 
+    /**
+     * Implementation for {@link ReadingService#getReadings()}
+     */
     @Override
     public List<Reading> getReadings() {
         logger.info("Received get readings request");

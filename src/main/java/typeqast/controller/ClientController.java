@@ -10,7 +10,6 @@ import typeqast.constants.RestEndpoints;
 import typeqast.entities.Client;
 import typeqast.service.ClientService;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
 @RestController
@@ -50,13 +49,7 @@ public class ClientController {
 
         Client resultClient = clientService.updateClient(client);
 
-        if (resultClient != null) {
-            return new ResponseEntity<>(resultClient, HttpStatus.OK);
-
-        } else {
-            return new ResponseEntity<>(resultClient, HttpStatus.NOT_FOUND);
-        }
-
+        return new ResponseEntity<>(resultClient, HttpStatus.OK);
 
     }
 
@@ -72,11 +65,6 @@ public class ClientController {
         List<Client> clientList = clientService.getClients();
 
         return new ResponseEntity<>(clientList, HttpStatus.OK);
-    }
-
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<String> onValidationError(Exception ex) {
-        return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 }

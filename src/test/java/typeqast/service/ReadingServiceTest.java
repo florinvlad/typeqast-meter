@@ -12,6 +12,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
+import typeqast.entities.exception.MeterNotFoundException;
 import typeqast.repository.MeterRepository;
 import typeqast.repository.ReadingRepository;
 import typeqast.service.impl.ReadingServiceImpl;
@@ -142,12 +143,13 @@ public class ReadingServiceTest {
         Mockito.when(meterRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
         Mockito.when(readingRepository.save(any())).thenReturn(mockResultReading);
 
-        Reading readingResponse = readingService.addReading(requestReading, BigInteger.valueOf(1));
-
-        Assert.assertNull("Result reading should be null ", readingResponse);
+        try {
+            readingService.addReading(requestReading, BigInteger.valueOf(1));
+        } catch (MeterNotFoundException mnfe) {
+            Assert.assertNotNull("Exception not thrown", mnfe);
+        }
 
     }
-
 
 
 }
