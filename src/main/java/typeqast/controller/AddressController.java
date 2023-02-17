@@ -17,17 +17,21 @@ import java.util.List;
 @RestController
 public class AddressController {
 
-    private static Logger logger = LoggerFactory.getLogger(AddressController.class);
+    private static final Logger logger = LoggerFactory.getLogger(AddressController.class);
+
+    private final AddressService addressService;
 
     @Autowired
-    private AddressService addressService;
+    public AddressController(AddressService addressService) {
+        this.addressService = addressService;
+    }
 
     /**
      * Add new address
      *
      * @param address  json body
      * @param clientId client id for address
-     * @return
+     * @return response
      */
     @PostMapping(RestEndpoints.ADDRESSES)
     public ResponseEntity<AddressDTO> addAddress(@RequestBody AddressDTO address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId) {
@@ -46,7 +50,7 @@ public class AddressController {
      * @param address   json body
      * @param clientId  id of client
      * @param addressId id of address
-     * @return
+     * @return response
      */
     @PutMapping(RestEndpoints.ADDRESSES)
     public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO address, @RequestParam(name = RequestParams.CLIENT_ID) BigInteger clientId, @RequestParam(name = RequestParams.ADDRESS_ID) BigInteger addressId) {
@@ -65,7 +69,7 @@ public class AddressController {
      * Get list of addresses
      *
      * @param id - optional address id
-     * @return
+     * @return response
      */
     @GetMapping(RestEndpoints.ADDRESSES)
     public ResponseEntity<List<AddressDTO>> getAddresses(@RequestParam(name = RequestParams.ID, required = false) BigInteger id) {
