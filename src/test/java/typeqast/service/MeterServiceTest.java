@@ -37,6 +37,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
+@SuppressWarnings("unchecked")
 public class MeterServiceTest {
 
     @TestConfiguration
@@ -206,8 +207,6 @@ public class MeterServiceTest {
         mockMeter.addReading(reading);
         reading = new Reading(2000, Month.MARCH, 1111L);
         mockMeter.addReading(reading);
-
-        BigInteger clientId = BigInteger.valueOf(1);
 
         Mockito.when(meterRepository.findOne(any())).thenReturn(Optional.of(mockMeter));
 

@@ -1,7 +1,6 @@
 package typeqast.service;
 
 import typeqast.entities.AggregateReading;
-import typeqast.entities.Meter;
 import typeqast.entities.dto.MeterDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.entities.exception.MeterNotFoundException;

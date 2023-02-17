@@ -30,6 +30,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
+@SuppressWarnings("unchecked")
 public class AddressServiceTest {
 
     @TestConfiguration

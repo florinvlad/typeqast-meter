@@ -9,7 +9,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import typeqast.constants.RequestParams;
 import typeqast.constants.RestEndpoints;
-import typeqast.entities.Reading;
 import typeqast.entities.dto.ReadingDTO;
 import typeqast.service.ReadingService;
 
