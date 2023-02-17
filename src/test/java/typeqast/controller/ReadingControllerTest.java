@@ -2,16 +2,14 @@ package typeqast.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -36,11 +34,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(ReadingController.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class ReadingControllerTest {
+class ReadingControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -49,7 +46,7 @@ public class ReadingControllerTest {
     ReadingService mockReadingService;
 
     @Test
-    public void addReadingTest() throws Exception {
+    void addReadingTest() throws Exception {
 
         Integer year = 2000;
         Month month = Month.APRIL;
@@ -71,7 +68,7 @@ public class ReadingControllerTest {
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         ReadingDTO responseReading = new ObjectMapper().readValue(responseBodyString, ReadingDTO.class);
 
@@ -80,7 +77,7 @@ public class ReadingControllerTest {
     }
 
     @Test
-    public void getReadingsTest() throws Exception {
+    void getReadingsTest() throws Exception {
 
         RequestBuilder requestBuilder = (get(RestEndpoints.READINGS).contentType(MediaType.APPLICATION_JSON));
 
@@ -100,13 +97,13 @@ public class ReadingControllerTest {
 
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         List<Reading> responseReadingList = new ObjectMapper().readValue(responseBodyString, new TypeReference<List<Reading>>() {
         });
 
-        Assert.assertNotNull(responseReadingList);
-        Assert.assertEquals(2, responseReadingList.size());
+        Assertions.assertNotNull(responseReadingList);
+        Assertions.assertEquals(2, responseReadingList.size());
 
 
     }

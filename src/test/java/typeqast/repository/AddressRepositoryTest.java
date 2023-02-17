@@ -1,28 +1,26 @@
 package typeqast.repository;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
-import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Address;
 import typeqast.util.assertions.AddressAssertions;
 
 import java.util.List;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.*;
+
 @DataJpaTest
 public class AddressRepositoryTest {
 
     @Autowired
     private AddressRepository addressRepository;
 
-    @After
-    public void afterTest() {
+    @AfterEach
+    public void afterEach() {
         addressRepository.deleteAll();
     }
 
@@ -57,7 +55,7 @@ public class AddressRepositoryTest {
 
         Optional<Address> resultAddress2 = addressRepository.findOne(Example.of(address));
 
-        Assert.assertTrue(resultAddress2.isPresent());
+        assertTrue(resultAddress2.isPresent());
 
         AddressAssertions.execute(address, resultAddress2.get());
 
@@ -80,8 +78,8 @@ public class AddressRepositoryTest {
 
         List<Address> addressResultList = addressRepository.findAll();
 
-        Assert.assertNotNull(addressResultList);
-        Assert.assertEquals(addressResultList.size(), 2);
+        assertNotNull(addressResultList);
+        assertEquals(addressResultList.size(), 2);
 
     }
 

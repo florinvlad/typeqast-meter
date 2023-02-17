@@ -2,16 +2,14 @@ package typeqast.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -37,11 +35,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(MeterController.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class MeterControllerTest {
+class MeterControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -50,7 +47,7 @@ public class MeterControllerTest {
     private MeterService mockMeterService;
 
     @Test
-    public void addMeterTest() throws Exception {
+    void addMeterTest() throws Exception {
 
         MeterDTO mockMeterDTO = new MeterDTO("meter1");
 
@@ -67,7 +64,7 @@ public class MeterControllerTest {
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         MeterDTO responseMeterDTO = new ObjectMapper().readValue(responseBodyString, MeterDTO.class);
 
@@ -76,7 +73,7 @@ public class MeterControllerTest {
     }
 
     @Test
-    public void updateMeterTest() throws Exception {
+    void updateMeterTest() throws Exception {
 
         MeterDTO mockMeterDTO = new MeterDTO("meter1");
 
@@ -93,7 +90,7 @@ public class MeterControllerTest {
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         MeterDTO responseMeterDTO = new ObjectMapper().readValue(responseBodyString, MeterDTO.class);
 
@@ -112,7 +109,7 @@ public class MeterControllerTest {
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         responseMeterDTO = new ObjectMapper().readValue(responseBodyString, MeterDTO.class);
 
@@ -121,7 +118,7 @@ public class MeterControllerTest {
     }
 
     @Test
-    public void getMetersTest() throws Exception {
+    void getMetersTest() throws Exception {
 
         RequestBuilder requestBuilder = (get(RestEndpoints.METERS).contentType(MediaType.APPLICATION_JSON));
 
@@ -141,20 +138,20 @@ public class MeterControllerTest {
 
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         List<Meter> responseMeterList = new ObjectMapper().readValue(responseBodyString, new TypeReference<List<Meter>>() {
         });
 
-        Assert.assertNotNull(responseMeterList);
-        Assert.assertEquals(2, responseMeterList.size());
+        Assertions.assertNotNull(responseMeterList);
+        Assertions.assertEquals(2, responseMeterList.size());
 
 
     }
 
 
     @Test
-    public void aggregateReadingTest() throws Exception {
+    void aggregateReadingTest() throws Exception {
 
         Meter meter = new Meter("test_meter");
         meter.setId(BigInteger.valueOf(1));
@@ -182,17 +179,17 @@ public class MeterControllerTest {
         MvcResult result = mvc.perform(requestBuilder)
                 .andExpect(status().isOk()).andReturn();
 
-        Assert.assertNotNull(result.getResponse());
+        Assertions.assertNotNull(result.getResponse());
 
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         AggregateReading responseAggregateReading = new ObjectMapper().readValue(responseBodyString, AggregateReading.class);
 
-        Assert.assertNotNull(responseAggregateReading);
-        Assert.assertEquals(aggregateReadingResponse.getTotal(), responseAggregateReading.getTotal());
-        Assert.assertEquals(mockResultReading.getYear(), responseAggregateReading.getYear());
+        Assertions.assertNotNull(responseAggregateReading);
+        Assertions.assertEquals(aggregateReadingResponse.getTotal(), responseAggregateReading.getTotal());
+        Assertions.assertEquals(mockResultReading.getYear(), responseAggregateReading.getYear());
 
     }
 

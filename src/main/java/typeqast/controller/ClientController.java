@@ -17,8 +17,12 @@ public class ClientController {
 
     private static Logger logger = LoggerFactory.getLogger(ClientController.class);
 
-    @Autowired
     private ClientService clientService;
+
+    @Autowired
+    public ClientController(ClientService clientService){
+        this.clientService=clientService;
+    }
 
     /**
      * Add new client

@@ -1,6 +1,7 @@
 package typeqast.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Max;
@@ -10,6 +11,11 @@ import java.time.Month;
 
 @Entity
 @Table(name = "reading")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Reading {
 
     @Id
@@ -34,10 +40,6 @@ public class Reading {
     @Column(name = "value", nullable = false, columnDefinition = "bigint default 0")
     private Long value;
 
-    public Reading() {
-
-    }
-
     public Reading(BigInteger id) {
         this.id = id;
     }
@@ -46,45 +48,5 @@ public class Reading {
         this.year = year;
         this.month = month;
         this.value = value;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
-    }
-
-    public Month getMonth() {
-        return month;
-    }
-
-    public void setMonth(Month month) {
-        this.month = month;
-    }
-
-    public Long getValue() {
-        return value;
-    }
-
-    public void setValue(Long value) {
-        this.value = value;
-    }
-
-    public Meter getMeter() {
-        return meter;
-    }
-
-    public void setMeter(Meter meter) {
-        this.meter = meter;
-    }
-
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
     }
 }

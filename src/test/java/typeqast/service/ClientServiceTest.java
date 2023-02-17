@@ -1,27 +1,18 @@
 package typeqast.service;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import typeqast.business.mapper.ClientMapperService;
-import typeqast.business.mapper.impl.ClientMapperServiceImpl;
+import org.mockito.junit.jupiter.MockitoExtension;
+import typeqast.business.mapper.ClientMapper;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.entities.dto.ClientDTO;
-import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
-import typeqast.repository.MeterRepository;
-import typeqast.repository.ReadingRepository;
-import typeqast.service.impl.ClientServiceImpl;
 import typeqast.util.assertions.AddressAssertions;
 import typeqast.util.assertions.ClientAssertions;
 import typeqast.util.assertions.MeterAssertions;
@@ -33,53 +24,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ClientServiceTest {
 
-    @TestConfiguration
-    static class ServiceImplTestContextConfiguration {
+    @InjectMocks
+    ClientService clientService;
 
-        @Bean
-        public ClientService clientService() {
-            return new ClientServiceImpl();
-        }
-
-    }
-
-    @TestConfiguration
-    static class MapperServiceImplTestContextConfiguration {
-
-        @Bean
-        public ClientMapperService clientMapperService() {
-            return new ClientMapperServiceImpl();
-        }
-
-    }
-
-    @Autowired
-    private ClientMapperService clientMapperService;
-
-    @Autowired
-    private ClientService clientService;
-
-    @MockBean
-    private ClientRepository clientRepository;
-
-    @MockBean
-    private AddressRepository addressRepository;
-
-    @MockBean
-    private MeterRepository meterRepository;
-
-    @MockBean
-    private ReadingRepository readingRepository;
+    @Mock
+    ClientRepository clientRepository;
 
     /**
-     * Unit test for {@link ClientServiceImpl#addClient(ClientDTO)}
+     * Unit test for {@link ClientService#addClient(ClientDTO)}
      */
-    @Test
+
     public void addClientTest() {
 
         ClientDTO requestClientDTO = new ClientDTO("name1");
@@ -91,14 +51,14 @@ public class ClientServiceTest {
 
         ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClientDTO);
+        assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+        ClientAssertions.execute(ClientMapper.toClientDTO(mockClient), resultClientDTO);
 
     }
 
     /**
-     * Unit test for {@link ClientServiceImpl#updateClient(ClientDTO)}
+     * Unit test for {@link ClientService#updateClient(ClientDTO)}
      */
     @Test
     public void updateClientTest() {
@@ -112,9 +72,9 @@ public class ClientServiceTest {
 
         ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClientDTO);
+        assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+        ClientAssertions.execute(ClientMapper.toClientDTO(mockClient), resultClientDTO);
 
         requestClientDTO.setName("name2");
         requestClientDTO.setId(resultClientDTO.getId());
@@ -126,15 +86,15 @@ public class ClientServiceTest {
 
         resultClientDTO = clientService.updateClient(requestClientDTO);
 
-        Assert.assertNotNull("client response should not be null ", resultClientDTO);
+        assertNotNull(resultClientDTO, "client response should not be null ");
 
-        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+        ClientAssertions.execute(ClientMapper.toClientDTO(mockClient), resultClientDTO);
 
 
     }
 
     /**
-     * Unit test for {@link ClientServiceImpl#getClients()}
+     * Unit test for {@link ClientService#getClients()}
      */
 
     @Test
@@ -150,8 +110,8 @@ public class ClientServiceTest {
 
         List<ClientDTO> resultClientList = clientService.getClients();
 
-        Assert.assertNotNull(resultClientList);
-        Assert.assertEquals(resultClientList.size(), 2);
+        assertNotNull(resultClientList);
+        assertEquals(2, resultClientList.size());
 
 
     }
@@ -184,9 +144,9 @@ public class ClientServiceTest {
 
         ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClientDTO);
+        assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+        ClientAssertions.execute(ClientMapper.toClientDTO(mockClient), resultClientDTO);
 
         Address resultAddress = resultClientDTO.getAddress();
 
@@ -198,8 +158,8 @@ public class ClientServiceTest {
 
         List<Reading> resultReadings = resultMeter.getReadings();
 
-        Assert.assertEquals(false, resultReadings.isEmpty());
-        Assert.assertEquals(1, resultReadings.size());
+        assertFalse(resultReadings.isEmpty());
+        assertEquals(1, resultReadings.size());
 
         Reading resultReading = resultReadings.get(0);
 
@@ -236,9 +196,9 @@ public class ClientServiceTest {
 
         ClientDTO resultClientDTO = clientService.addClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClientDTO);
+        assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+        ClientAssertions.execute(ClientMapper.toClientDTO(mockClient), resultClientDTO);
 
         Address resultAddress = resultClientDTO.getAddress();
 
@@ -250,8 +210,8 @@ public class ClientServiceTest {
 
         List<Reading> resultReadings = resultMeter.getReadings();
 
-        Assert.assertEquals(false, resultReadings.isEmpty());
-        Assert.assertEquals(1, resultReadings.size());
+        assertFalse(resultReadings.isEmpty());
+        assertEquals(1, resultReadings.size());
 
         Reading resultReading = resultReadings.get(0);
 
@@ -277,9 +237,9 @@ public class ClientServiceTest {
 
         resultClientDTO = clientService.updateClient(requestClientDTO);
 
-        Assert.assertNotNull(resultClientDTO);
+        assertNotNull(resultClientDTO);
 
-        ClientAssertions.execute(clientMapperService.toClientDTO(mockClient), resultClientDTO);
+        ClientAssertions.execute(ClientMapper.toClientDTO(mockClient), resultClientDTO);
 
         resultAddress = resultClientDTO.getAddress();
 
@@ -291,8 +251,8 @@ public class ClientServiceTest {
 
         resultReadings = resultMeter.getReadings();
 
-        Assert.assertEquals(false, resultReadings.isEmpty());
-        Assert.assertEquals(1, resultReadings.size());
+        assertFalse(resultReadings.isEmpty());
+        assertEquals(1, resultReadings.size());
 
         resultReading = resultReadings.get(0);
 

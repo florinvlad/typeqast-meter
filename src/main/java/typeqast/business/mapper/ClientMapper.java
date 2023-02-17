@@ -1,16 +1,13 @@
-package typeqast.business.mapper.impl;
+package typeqast.business.mapper;
 
-import org.springframework.stereotype.Service;
-
-import typeqast.business.mapper.ClientMapperService;
 import typeqast.entities.Client;
 import typeqast.entities.dto.ClientDTO;
 
-@Service
-public class ClientMapperServiceImpl implements ClientMapperService {
+public class ClientMapper {
+    private ClientMapper() {
+    }
 
-    @Override
-    public Client toClient(ClientDTO clientDTO) {
+    public static Client toClient(ClientDTO clientDTO) {
 
         Client client = new Client();
         client.setName(clientDTO.getName());
@@ -21,8 +18,7 @@ public class ClientMapperServiceImpl implements ClientMapperService {
         return client;
     }
 
-    @Override
-    public ClientDTO toClientDTO(Client client) {
+    public static ClientDTO toClientDTO(Client client) {
 
         ClientDTO clientDTO = new ClientDTO();
         clientDTO.setName(client.getName());
@@ -32,5 +28,4 @@ public class ClientMapperServiceImpl implements ClientMapperService {
 
         return clientDTO;
     }
-
 }

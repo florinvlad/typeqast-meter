@@ -2,16 +2,14 @@ package typeqast.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
@@ -34,11 +32,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(AddressController.class)
 @AutoConfigureMockMvc
 @TestPropertySource(locations = "classpath:application-test.properties")
-public class AddressControllerTest {
+class AddressControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -47,7 +44,7 @@ public class AddressControllerTest {
     private AddressService mockAddressService;
 
     @Test
-    public void addAddressesTest() throws Exception {
+    void addAddressesTest() throws Exception {
 
         AddressDTO mockAddress = new AddressDTO("country1", "city1", "street1", 1);
 
@@ -63,7 +60,7 @@ public class AddressControllerTest {
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         AddressDTO responseAddress = new ObjectMapper().readValue(responseBodyString, AddressDTO.class);
 
@@ -72,7 +69,7 @@ public class AddressControllerTest {
     }
 
     @Test
-    public void updateAddressTest() throws Exception {
+    void updateAddressTest() throws Exception {
 
         AddressDTO mockAddress = new AddressDTO("country1", "city1", "street1", 1);
 
@@ -88,7 +85,7 @@ public class AddressControllerTest {
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         AddressDTO responseAddress = new ObjectMapper().readValue(responseBodyString, AddressDTO.class);
 
@@ -108,7 +105,7 @@ public class AddressControllerTest {
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         responseAddress = new ObjectMapper().readValue(responseBodyString, AddressDTO.class);
 
@@ -116,9 +113,8 @@ public class AddressControllerTest {
 
     }
 
-
     @Test
-    public void getAddressesTest() throws Exception {
+    void getAddressesTest() throws Exception {
         RequestBuilder requestBuilder = (get(RestEndpoints.ADDRESSES).contentType(MediaType.APPLICATION_JSON));
 
         AddressDTO address = new AddressDTO("country1", "city1", "street1", 1);
@@ -136,13 +132,13 @@ public class AddressControllerTest {
 
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         List<Address> responseAddressList = new ObjectMapper().readValue(responseBodyString, new TypeReference<List<Address>>() {
         });
 
-        Assert.assertNotNull(responseAddressList);
-        Assert.assertEquals(2, responseAddressList.size());
+        Assertions.assertNotNull(responseAddressList);
+        Assertions.assertEquals(2, responseAddressList.size());
 
     }
 

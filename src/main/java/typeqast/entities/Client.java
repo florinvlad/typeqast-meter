@@ -1,10 +1,17 @@
 package typeqast.entities;
 
+import lombok.*;
+
 import javax.persistence.*;
 import java.math.BigInteger;
 
 @Entity
 @Table(name = "client")
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Client {
 
     @Id
@@ -33,38 +40,4 @@ public class Client {
         this.id = id;
     }
 
-    public Client() {
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Meter getMeter() {
-        return meter;
-    }
-
-    public void setMeter(Meter meter) {
-        this.meter = meter;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
-    }
 }

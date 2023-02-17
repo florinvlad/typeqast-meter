@@ -1,9 +1,8 @@
 package typeqast.repository;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
@@ -16,7 +15,6 @@ import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 public class ReadingRepositoryTest {
 
@@ -26,8 +24,8 @@ public class ReadingRepositoryTest {
     @Autowired
     private MeterRepository meterRepository;
 
-    @After
-    public void afterTest() {
+    @AfterEach
+    public void afterEach() {
         meterRepository.deleteAll();
         readingRepository.deleteAll();
     }
@@ -67,7 +65,7 @@ public class ReadingRepositoryTest {
 
         Optional<Reading> resultReading2 = readingRepository.findOne(Example.of(reading));
 
-        Assert.assertTrue(resultReading2.isPresent());
+        Assertions.assertTrue(resultReading2.isPresent());
 
         ReadingAssertions.execute(reading, resultReading2.get());
     }
@@ -93,8 +91,8 @@ public class ReadingRepositoryTest {
 
         List<Reading> readingResultList = readingRepository.findAll();
 
-        Assert.assertNotNull(readingResultList);
-        Assert.assertEquals(readingResultList.size(), 2);
+        Assertions.assertNotNull(readingResultList);
+        Assertions.assertEquals(readingResultList.size(), 2);
 
     }
 

@@ -1,19 +1,11 @@
-package typeqast.business.mapper.impl;
+package typeqast.business.mapper;
 
-import org.springframework.stereotype.Service;
-
-import typeqast.business.mapper.AddressMapperService;
 import typeqast.entities.Address;
 import typeqast.entities.dto.AddressDTO;
 
-/**
- * Implementation for {@link AddressMapperService}
- */
-@Service
-public class AddressMapperServiceImpl implements AddressMapperService {
-
-    @Override
-    public Address toAddress(AddressDTO addressDTO) {
+public class AddressMapper{
+    private AddressMapper(){}
+    public static Address addressDTOtoAddress(AddressDTO addressDTO) {
 
         Address address = new Address();
         address.setClient(addressDTO.getClient());
@@ -27,8 +19,7 @@ public class AddressMapperServiceImpl implements AddressMapperService {
 
     }
 
-    @Override
-    public AddressDTO toAddressDTO(Address address) {
+    public static AddressDTO addressToAddressDTO(Address address) {
 
         AddressDTO addressDTO = new AddressDTO();
         addressDTO.setClient(address.getClient());

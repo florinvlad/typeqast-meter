@@ -1,16 +1,15 @@
-package typeqast.business.mapper.impl;
+package typeqast.business.mapper;
 
-import org.springframework.stereotype.Service;
-
-import typeqast.business.mapper.MeterMapperService;
 import typeqast.entities.Meter;
 import typeqast.entities.dto.MeterDTO;
 
-@Service
-public class MeterMapperServiceImpl implements MeterMapperService {
+public class MeterMapper {
 
-    @Override
-    public Meter toMeter(MeterDTO meterDTO) {
+    private MeterMapper() {
+    }
+
+
+    public static Meter toMeter(MeterDTO meterDTO) {
 
         Meter meter = new Meter();
         meter.setId(meterDTO.getId());
@@ -21,8 +20,7 @@ public class MeterMapperServiceImpl implements MeterMapperService {
         return meter;
     }
 
-    @Override
-    public MeterDTO toMeterDTO(Meter meter) {
+    public static MeterDTO toMeterDTO(Meter meter) {
 
         MeterDTO meterDTO = new MeterDTO();
         meterDTO.setId(meter.getId());

@@ -16,7 +16,6 @@ import java.time.Month;
 /*
 Utility class for pre-populating the db
  */
-@Component
 public class DbPopulator {
 
 

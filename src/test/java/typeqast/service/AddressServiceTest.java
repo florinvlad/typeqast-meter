@@ -1,25 +1,21 @@
 package typeqast.service;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestConfiguration;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import typeqast.business.mapper.AddressMapperService;
-import typeqast.business.mapper.impl.AddressMapperServiceImpl;
+import typeqast.business.mapper.AddressMapper;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.dto.AddressDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.repository.AddressRepository;
 import typeqast.repository.ClientRepository;
-import typeqast.service.impl.AddressServiceImpl;
 import typeqast.util.assertions.AddressAssertions;
 
 import java.math.BigInteger;
@@ -29,47 +25,21 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class AddressServiceTest {
+class AddressServiceTest {
 
-    @TestConfiguration
-    static class ServiceImplTestContextConfiguration {
-
-        @Bean
-        public AddressService addressService() {
-            return new AddressServiceImpl();
-        }
-
-    }
-
-    @TestConfiguration
-    static class MapperServiceImplTestContextConfiguration {
-
-        @Bean
-        public AddressMapperService addressMapperService() {
-            return new AddressMapperServiceImpl();
-        }
-
-    }
-
-    @Autowired
-    private AddressMapperService addressMapperService;
-
-    @Autowired
+    @InjectMocks
     private AddressService addressService;
 
-    @MockBean
+    @Mock
     private AddressRepository addressRepository;
 
-    @MockBean
+    @Mock
     private ClientRepository clientRepository;
 
-    /**
-     * Add address unit test for {@link AddressServiceImpl#addAddress(AddressDTO, BigInteger)}
-     */
     @Test
-    public void addAddressTest() {
+    void addAddressTest() {
 
         AddressDTO requestAddressDTO = new AddressDTO("country1", "city1", "street1", 1);
 
@@ -81,17 +51,14 @@ public class AddressServiceTest {
 
         AddressDTO resultAddressDTO = addressService.addAddress(requestAddressDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull(" address object should not be null ", resultAddressDTO);
+        Assertions.assertNotNull(resultAddressDTO, " address object should not be null ");
 
-        AddressAssertions.execute(addressMapperService.toAddressDTO(mockResultAddress), resultAddressDTO);
+        AddressAssertions.execute(AddressMapper.addressToAddressDTO(mockResultAddress), resultAddressDTO);
 
     }
 
-    /**
-     * Update address unit test for {@link AddressServiceImpl#updateAddress(AddressDTO, BigInteger)}
-     */
     @Test
-    public void updateAddressTest() {
+    void updateAddressTest() {
 
         AddressDTO requestAddress = new AddressDTO("country1", "city1", "street1", 1);
 
@@ -103,9 +70,9 @@ public class AddressServiceTest {
 
         AddressDTO resultAddressDTO = addressService.addAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull(" address object should not be null ", resultAddressDTO);
+        Assertions.assertNotNull(resultAddressDTO, " address object should not be null ");
 
-        AddressDTO expectedAddressDTO = addressMapperService.toAddressDTO(mockResultAddress);
+        AddressDTO expectedAddressDTO = AddressMapper.addressToAddressDTO(mockResultAddress);
 
         AddressAssertions.execute(expectedAddressDTO, resultAddressDTO);
 
@@ -120,19 +87,15 @@ public class AddressServiceTest {
 
         resultAddressDTO = addressService.updateAddress(requestAddress, BigInteger.valueOf(1));
 
-        Assert.assertNotNull(" address object should not be null ", resultAddressDTO);
+        Assertions.assertNotNull(resultAddressDTO, " address object should not be null");
 
-        expectedAddressDTO = addressMapperService.toAddressDTO(mockResultAddress);
+        expectedAddressDTO = AddressMapper.addressToAddressDTO(mockResultAddress);
         AddressAssertions.execute(expectedAddressDTO, resultAddressDTO);
 
     }
 
-    /**
-     * Get addresses unit test for {@link AddressServiceImpl#getAddresses(BigInteger)}
-     */
-
     @Test
-    public void getAddressesTest() {
+    void getAddressesTest() {
 
         Address address1 = new Address("country1", "city1", "street1", 1);
         Address address2 = new Address("country2", "city2", "street2", 2);
@@ -144,8 +107,8 @@ public class AddressServiceTest {
 
         List<AddressDTO> resultAddressList = addressService.getAddresses(null);
 
-        Assert.assertNotNull(resultAddressList);
-        Assert.assertEquals(resultAddressList.size(), 2);
+        Assertions.assertNotNull(resultAddressList);
+        Assertions.assertEquals(2, resultAddressList.size());
 
 
     }
@@ -154,7 +117,7 @@ public class AddressServiceTest {
      * Add address for inexistent client
      */
     @Test
-    public void addAddressInexistentClientTest() {
+    void addAddressInexistentClientTest() {
 
         AddressDTO requestAddress = new AddressDTO("country1", "city1", "street1", 1);
 
@@ -166,7 +129,7 @@ public class AddressServiceTest {
         try {
             addressService.addAddress(requestAddress, BigInteger.valueOf(1));
         } catch (ClientNotFoundException cnfe) {
-            Assert.assertNotNull(cnfe);
+            Assertions.assertNotNull(cnfe);
         }
 
     }

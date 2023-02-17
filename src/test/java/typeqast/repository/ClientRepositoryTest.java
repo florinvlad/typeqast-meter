@@ -1,33 +1,30 @@
 package typeqast.repository;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
-import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Client;
 import typeqast.util.assertions.ClientAssertions;
 
 import java.util.List;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 public class ClientRepositoryTest {
 
     @Autowired
     private ClientRepository clientRepository;
 
-    @After
-    public void afterTest() {
+    @AfterEach
+    public void afterEachTest() {
         clientRepository.deleteAll();
     }
 
     @Test
-    public void addClientTest() {
+    void addClientTest() {
 
         Client client = new Client("name1");
 
@@ -38,7 +35,7 @@ public class ClientRepositoryTest {
     }
 
     @Test
-    public void updateClientTest() {
+    void updateClientTest() {
 
         String clientName = "name1";
 
@@ -46,8 +43,8 @@ public class ClientRepositoryTest {
 
         Client resultClient = clientRepository.save(client);
 
-        Assert.assertNotNull(resultClient.getId());
-        Assert.assertEquals(clientName, resultClient.getName());
+        Assertions.assertNotNull(resultClient.getId());
+        Assertions.assertEquals(clientName, resultClient.getName());
 
         client = resultClient;
         clientName = "name1_updated";
@@ -59,14 +56,14 @@ public class ClientRepositoryTest {
 
         Optional<Client> resultClient2 = clientRepository.findOne(Example.of(client));
 
-        Assert.assertTrue(resultClient2.isPresent());
+        Assertions.assertTrue(resultClient2.isPresent());
 
         ClientAssertions.execute(client, resultClient2.get());
 
     }
 
     @Test
-    public void getClientsTest() {
+    void getClientsTest() {
 
         Client client = new Client("name1");
 
@@ -82,8 +79,8 @@ public class ClientRepositoryTest {
 
         List<Client> clientResultList = clientRepository.findAll();
 
-        Assert.assertNotNull(clientResultList);
-        Assert.assertEquals(clientResultList.size(), 2);
+        Assertions.assertNotNull(clientResultList);
+        Assertions.assertEquals(clientResultList.size(), 2);
 
     }
 

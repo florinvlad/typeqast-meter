@@ -1,22 +1,18 @@
 package typeqast.service;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import typeqast.business.mapper.MeterMapperService;
-import typeqast.business.mapper.impl.MeterMapperServiceImpl;
+import typeqast.business.mapper.MeterMapper;
 import typeqast.business.processor.ReadingProcessor;
-import typeqast.business.processor.impl.AggregateReadingCalculator;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;
@@ -25,7 +21,6 @@ import typeqast.entities.dto.MeterDTO;
 import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
-import typeqast.service.impl.MeterServiceImpl;
 import typeqast.util.assertions.MeterAssertions;
 
 import java.math.BigInteger;
@@ -36,62 +31,26 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 @SuppressWarnings("unchecked")
-public class MeterServiceTest {
-
-    @TestConfiguration
-    static class ServiceImplTestContextConfiguration {
-
-        @Bean
-        public MeterService meterService() {
-            return new MeterServiceImpl();
-        }
-
-    }
-
-    @TestConfiguration
-    static class MapperServiceImplTestContextConfiguration {
-
-        @Bean
-        public MeterMapperService meterMapperService() {
-            return new MeterMapperServiceImpl();
-        }
-
-    }
+class MeterServiceTest {
 
 
-    @TestConfiguration
-    static class ReadingProcessorTestContextConfiguration {
-
-        @Bean
-        public ReadingProcessor readingProcessor() {
-            return new AggregateReadingCalculator();
-        }
-
-    }
-
-    @Autowired
+    @Mock
     @Qualifier("aggregateReading")
     private ReadingProcessor readingProcessor;
 
-    @Autowired
-    private MeterMapperService meterMapperService;
-
-    @Autowired
+    @InjectMocks
     private MeterService meterService;
 
-    @MockBean
+    @Mock
     private MeterRepository meterRepository;
 
-    @MockBean
+    @Mock
     private ClientRepository clientRepository;
 
-    /**
-     * Add meter unit test for {@link MeterServiceImpl#addMeter(MeterDTO, BigInteger)}
-     */
     @Test
-    public void addMeterTest() {
+    void addMeterTest() {
 
         MeterDTO requestMeterDTO = new MeterDTO("meter1");
 
@@ -103,17 +62,14 @@ public class MeterServiceTest {
 
         MeterDTO meterResponseDTO = meterService.addMeter(requestMeterDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result meter response should not be null ", meterResponseDTO);
+        Assertions.assertNotNull(meterResponseDTO, "Result meter response should not be null ");
 
-        MeterAssertions.execute(meterMapperService.toMeterDTO(mockResultMeter), meterResponseDTO);
+        MeterAssertions.execute(MeterMapper.toMeterDTO(mockResultMeter), meterResponseDTO);
 
     }
 
-    /**
-     * Update meter unit test for {@link MeterServiceImpl#updateMeter(MeterDTO, BigInteger)}
-     */
     @Test
-    public void updateMeterTest() {
+    void updateMeterTest() {
 
         MeterDTO requestMeterDTO = new MeterDTO("meter1");
 
@@ -125,9 +81,9 @@ public class MeterServiceTest {
 
         MeterDTO meterResponseDTO = meterService.addMeter(requestMeterDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result meter response should not be null ", meterResponseDTO);
+        Assertions.assertNotNull(meterResponseDTO, "Result meter response should not be null ");
 
-        MeterAssertions.execute(meterMapperService.toMeterDTO(mockResultMeter), meterResponseDTO);
+        MeterAssertions.execute(MeterMapper.toMeterDTO(mockResultMeter), meterResponseDTO);
 
         requestMeterDTO.setName("meter1_updated");
         requestMeterDTO.setId(meterResponseDTO.getId());
@@ -140,17 +96,14 @@ public class MeterServiceTest {
 
         meterResponseDTO = meterService.updateMeter(requestMeterDTO, BigInteger.valueOf(1));
 
-        Assert.assertNotNull("Result meter response should not be null ", meterResponseDTO);
+        Assertions.assertNotNull(meterResponseDTO, "Result meter response should not be null ");
 
-        MeterAssertions.execute(meterMapperService.toMeterDTO(mockResultMeter2), meterResponseDTO);
+        MeterAssertions.execute(MeterMapper.toMeterDTO(mockResultMeter2), meterResponseDTO);
 
     }
 
-    /**
-     * Get meteres unit test for {@link MeterServiceImpl#getMeters(BigInteger)}
-     */
     @Test
-    public void getMetersTest() {
+    void getMetersTest() {
 
         Meter meter1 = new Meter("meter1");
         meter1.setId(BigInteger.valueOf(1));
@@ -164,8 +117,8 @@ public class MeterServiceTest {
 
         List<MeterDTO> resultMeterList = meterService.getMeters(null);
 
-        Assert.assertNotNull(resultMeterList);
-        Assert.assertEquals(2, resultMeterList.size());
+        Assertions.assertNotNull(resultMeterList);
+        Assertions.assertEquals(2, resultMeterList.size());
 
     }
 
@@ -173,7 +126,7 @@ public class MeterServiceTest {
      * Add meter to a client that does not exist
      */
     @Test
-    public void addMeterInexistentClientTest() {
+    void addMeterInexistentClientTest() {
 
         MeterDTO requestMeterDTO = new MeterDTO("meter1");
 
@@ -181,23 +134,19 @@ public class MeterServiceTest {
         mockResultMeter.setId(BigInteger.valueOf(1));
 
         Mockito.when(clientRepository.findOne(any(Example.class))).thenReturn(Optional.empty());
-        Mockito.when(meterRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
 
         try {
             meterService.addMeter(requestMeterDTO, BigInteger.valueOf(1));
         } catch (ClientNotFoundException cnfe) {
-            Assert.assertNotNull("Client exception should be thrown ", cnfe);
+            Assertions.assertNotNull(cnfe, "Client exception should be thrown ");
 
         }
 
 
     }
 
-    /**
-     * Get aggregate readings unit test for {@link MeterServiceImpl#getAggregateReadings(Integer, BigInteger)}
-     */
     @Test
-    public void getAggregateReadingsTest() {
+    void getAggregateReadingsTest() {
 
         Meter mockMeter = new Meter("meter1");
         mockMeter.setId(BigInteger.valueOf(1));
@@ -209,13 +158,14 @@ public class MeterServiceTest {
         mockMeter.addReading(reading);
 
         Mockito.when(meterRepository.findOne(any())).thenReturn(Optional.of(mockMeter));
+        Mockito.when(readingProcessor.process(any())).thenReturn(3333l);
 
         AggregateReading aggregateReading = meterService.getAggregateReadings(2000, mockMeter.getId());
 
-        Assert.assertNotNull(aggregateReading);
-        Assert.assertEquals(reading.getYear(), aggregateReading.getYear());
+        Assertions.assertNotNull(aggregateReading);
+        Assertions.assertEquals(reading.getYear(), aggregateReading.getYear());
         Long mockTotal = 3333L;
-        Assert.assertEquals(mockTotal, aggregateReading.getTotal());
+        Assertions.assertEquals(mockTotal, aggregateReading.getTotal());
 
 
     }

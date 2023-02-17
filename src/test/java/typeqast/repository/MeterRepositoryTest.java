@@ -1,9 +1,8 @@
 package typeqast.repository;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
@@ -14,15 +13,14 @@ import typeqast.util.assertions.MeterAssertions;
 import java.util.List;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
 @DataJpaTest
 public class MeterRepositoryTest {
 
     @Autowired
     private MeterRepository meterRepository;
 
-    @After
-    public void afterTest() {
+    @AfterEach
+    public void afterEachTest() {
         meterRepository.deleteAll();
     }
 
@@ -55,7 +53,7 @@ public class MeterRepositoryTest {
 
         Optional<Meter> resultMeter2 = meterRepository.findOne(Example.of(meter));
 
-        Assert.assertTrue(resultMeter2.isPresent());
+        Assertions.assertTrue(resultMeter2.isPresent());
 
         MeterAssertions.execute(meter, resultMeter2.get());
 
@@ -78,8 +76,8 @@ public class MeterRepositoryTest {
 
         List<Meter> meterResultList = meterRepository.findAll();
 
-        Assert.assertNotNull(meterResultList);
-        Assert.assertEquals(meterResultList.size(), 2);
+        Assertions.assertNotNull(meterResultList);
+        Assertions.assertEquals(meterResultList.size(), 2);
 
     }
 

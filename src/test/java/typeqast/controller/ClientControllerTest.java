@@ -2,25 +2,21 @@ package typeqast.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import typeqast.constants.RestEndpoints;
 import typeqast.entities.Client;
 import typeqast.entities.dto.ClientDTO;
-import typeqast.service.AddressService;
 import typeqast.service.ClientService;
-import typeqast.service.MeterService;
 import typeqast.util.assertions.ClientAssertions;
 
 import java.math.BigInteger;
@@ -33,12 +29,11 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @WebMvcTest(ClientController.class)
 @AutoConfigureMockMvc
 @TestPropertySource(
         locations = "classpath:application-test.properties")
-public class ClientControllerTest {
+class ClientControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -46,14 +41,8 @@ public class ClientControllerTest {
     @MockBean
     private ClientService mockClientService;
 
-    @MockBean
-    private AddressService mockAddressService;
-
-    @MockBean
-    private MeterService mockMeterService;
-
     @Test
-    public void getClientsTest() throws Exception {
+    void getClientsTest() throws Exception {
         RequestBuilder requestBuilder = (get(RestEndpoints.CLIENTS).contentType(MediaType.APPLICATION_JSON));
 
         ClientDTO client = new ClientDTO("name1");
@@ -74,18 +63,18 @@ public class ClientControllerTest {
 
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         List<Client> responseClientList = new ObjectMapper().readValue(responseBodyString, new TypeReference<List<Client>>() {
         });
 
-        Assert.assertNotNull(responseClientList);
-        Assert.assertEquals(2, responseClientList.size());
+        Assertions.assertNotNull(responseClientList);
+        Assertions.assertEquals(2, responseClientList.size());
 
     }
 
     @Test
-    public void addClientTest() throws Exception {
+    void addClientTest() throws Exception {
 
         ClientDTO mockClientDTO = new ClientDTO("name1");
 
@@ -107,7 +96,7 @@ public class ClientControllerTest {
     }
 
     @Test
-    public void updateClientTest() throws Exception {
+    void updateClientTest() throws Exception {
 
         String clientName = "name1";
 
@@ -123,7 +112,7 @@ public class ClientControllerTest {
         MvcResult result = mvc.perform(requestBuilder).andExpect(status().isCreated()).andReturn();
         String responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         ClientDTO responseClient = new ObjectMapper().readValue(responseBodyString, ClientDTO.class);
 
@@ -141,7 +130,7 @@ public class ClientControllerTest {
         result = mvc.perform(requestBuilder).andExpect(status().isOk()).andReturn();
         responseBodyString = result.getResponse().getContentAsString();
 
-        Assert.assertNotNull(responseBodyString);
+        Assertions.assertNotNull(responseBodyString);
 
         responseClient = new ObjectMapper().readValue(responseBodyString, ClientDTO.class);
 

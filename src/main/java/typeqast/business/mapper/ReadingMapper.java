@@ -1,16 +1,11 @@
-package typeqast.business.mapper.impl;
+package typeqast.business.mapper;
 
-import org.springframework.stereotype.Service;
-
-import typeqast.business.mapper.ReadingMapperService;
 import typeqast.entities.Reading;
 import typeqast.entities.dto.ReadingDTO;
 
-@Service
-public class ReadingMapperServiceImpl implements ReadingMapperService {
+public class ReadingMapper {
 
-    @Override
-    public Reading toReading(ReadingDTO readingDTO) {
+    public static Reading toReading(ReadingDTO readingDTO) {
 
         Reading reading = new Reading();
         reading.setId(readingDTO.getId());
@@ -22,8 +17,7 @@ public class ReadingMapperServiceImpl implements ReadingMapperService {
         return reading;
     }
 
-    @Override
-    public ReadingDTO toReadingDTO(Reading reading) {
+    public static ReadingDTO toReadingDTO(Reading reading) {
 
         ReadingDTO readingDTO = new ReadingDTO();
         readingDTO.setId(reading.getId());
