@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import typeqast.business.transformer.AddressMapperService;
+
+import typeqast.business.mapper.AddressMapperService;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.dto.AddressDTO;

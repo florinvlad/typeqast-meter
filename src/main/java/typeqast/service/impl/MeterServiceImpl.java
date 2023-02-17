@@ -6,8 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+
+import typeqast.business.mapper.MeterMapperService;
 import typeqast.business.processor.ReadingProcessor;
-import typeqast.business.transformer.MeterMapperService;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;

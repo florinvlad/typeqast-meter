@@ -10,8 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
-import typeqast.business.transformer.ReadingMapperService;
-import typeqast.business.transformer.impl.ReadingMapperServiceImpl;
+
+import typeqast.business.mapper.ReadingMapperService;
+import typeqast.business.mapper.impl.ReadingMapperServiceImpl;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.entities.dto.ReadingDTO;

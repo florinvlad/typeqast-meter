@@ -9,8 +9,9 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.context.junit4.SpringRunner;
-import typeqast.business.transformer.ClientMapperService;
-import typeqast.business.transformer.impl.ClientMapperServiceImpl;
+
+import typeqast.business.mapper.ClientMapperService;
+import typeqast.business.mapper.impl.ClientMapperServiceImpl;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;

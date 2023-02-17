@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import typeqast.business.transformer.ReadingMapperService;
+
+import typeqast.business.mapper.ReadingMapperService;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.entities.dto.ReadingDTO;

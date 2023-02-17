@@ -5,7 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import typeqast.business.transformer.ClientMapperService;
+
+import typeqast.business.mapper.ClientMapperService;
 import typeqast.entities.Client;
 import typeqast.entities.dto.ClientDTO;
 import typeqast.entities.exception.ClientNotFoundException;

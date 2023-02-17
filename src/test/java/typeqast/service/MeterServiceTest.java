@@ -12,10 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import typeqast.business.mapper.MeterMapperService;
+import typeqast.business.mapper.impl.MeterMapperServiceImpl;
 import typeqast.business.processor.ReadingProcessor;
 import typeqast.business.processor.impl.AggregateReadingCalculator;
-import typeqast.business.transformer.MeterMapperService;
-import typeqast.business.transformer.impl.MeterMapperServiceImpl;
 import typeqast.entities.AggregateReading;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;

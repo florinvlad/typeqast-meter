@@ -1,7 +1,8 @@
-package typeqast.business.transformer.impl;
+package typeqast.business.mapper.impl;
 
 import org.springframework.stereotype.Service;
-import typeqast.business.transformer.ClientMapperService;
+
+import typeqast.business.mapper.ClientMapperService;
 import typeqast.entities.Client;
 import typeqast.entities.dto.ClientDTO;
 

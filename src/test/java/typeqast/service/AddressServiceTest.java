@@ -10,8 +10,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Example;
 import org.springframework.test.context.junit4.SpringRunner;
-import typeqast.business.transformer.AddressMapperService;
-import typeqast.business.transformer.impl.AddressMapperServiceImpl;
+
+import typeqast.business.mapper.AddressMapperService;
+import typeqast.business.mapper.impl.AddressMapperServiceImpl;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.dto.AddressDTO;

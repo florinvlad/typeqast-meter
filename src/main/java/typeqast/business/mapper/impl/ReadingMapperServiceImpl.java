@@ -1,7 +1,8 @@
-package typeqast.business.transformer.impl;
+package typeqast.business.mapper.impl;
 
 import org.springframework.stereotype.Service;
-import typeqast.business.transformer.ReadingMapperService;
+
+import typeqast.business.mapper.ReadingMapperService;
 import typeqast.entities.Reading;
 import typeqast.entities.dto.ReadingDTO;
 
