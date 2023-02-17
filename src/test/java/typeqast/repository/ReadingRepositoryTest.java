@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Example;
-import org.springframework.test.context.junit4.SpringRunner;
 import typeqast.entities.Meter;
 import typeqast.entities.Reading;
 import typeqast.util.assertions.ReadingAssertions;
@@ -16,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
-public class ReadingRepositoryTest {
+class ReadingRepositoryTest {
 
     @Autowired
     private ReadingRepository readingRepository;
@@ -31,7 +30,7 @@ public class ReadingRepositoryTest {
     }
 
     @Test
-    public void addReadingTest() {
+    void addReadingTest() {
 
         Meter testMeter = meterRepository.save(new Meter());
 
@@ -42,10 +41,12 @@ public class ReadingRepositoryTest {
 
         ReadingAssertions.execute(reading, resultReading);
 
+        Assertions.assertTrue(true);
+
     }
 
     @Test
-    public void updateReadingTest() {
+    void updateReadingTest() {
 
         Meter testMeter = meterRepository.save(new Meter());
 
@@ -71,7 +72,7 @@ public class ReadingRepositoryTest {
     }
 
     @Test
-    public void getReadingsTest() {
+    void getReadingsTest() {
 
         Meter testMeter = meterRepository.save(new Meter());
 
@@ -92,7 +93,7 @@ public class ReadingRepositoryTest {
         List<Reading> readingResultList = readingRepository.findAll();
 
         Assertions.assertNotNull(readingResultList);
-        Assertions.assertEquals(readingResultList.size(), 2);
+        Assertions.assertEquals(2, readingResultList.size());
 
     }
 

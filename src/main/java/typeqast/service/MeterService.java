@@ -2,11 +2,9 @@ package typeqast.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-
 import typeqast.business.mapper.MeterMapper;
 import typeqast.business.processor.ReadingProcessor;
 import typeqast.entities.AggregateReading;
@@ -18,7 +16,6 @@ import typeqast.entities.exception.ClientNotFoundException;
 import typeqast.entities.exception.MeterNotFoundException;
 import typeqast.repository.ClientRepository;
 import typeqast.repository.MeterRepository;
-import typeqast.service.MeterService;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

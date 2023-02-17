@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
-public class ClientRepositoryTest {
+class ClientRepositoryTest {
 
     @Autowired
     private ClientRepository clientRepository;
@@ -31,6 +31,7 @@ public class ClientRepositoryTest {
         Client resultClient = clientRepository.save(client);
 
         ClientAssertions.execute(client, resultClient);
+        Assertions.assertTrue(true);
 
     }
 
@@ -80,7 +81,7 @@ public class ClientRepositoryTest {
         List<Client> clientResultList = clientRepository.findAll();
 
         Assertions.assertNotNull(clientResultList);
-        Assertions.assertEquals(clientResultList.size(), 2);
+        Assertions.assertEquals(2,clientResultList.size());
 
     }
 

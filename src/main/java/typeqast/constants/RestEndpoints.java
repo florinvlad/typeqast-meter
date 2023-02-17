@@ -2,6 +2,9 @@ package typeqast.constants;
 
 public class RestEndpoints {
 
+    private RestEndpoints() {
+    }
+
     public static final String CLIENTS = "/clients";
 
     public static final String ADDRESSES = "/addresses";

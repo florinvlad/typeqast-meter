@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-public class ClientServiceTest {
+class ClientServiceTest {
 
     @InjectMocks
     ClientService clientService;
@@ -61,7 +61,7 @@ public class ClientServiceTest {
      * Unit test for {@link ClientService#updateClient(ClientDTO)}
      */
     @Test
-    public void updateClientTest() {
+    void updateClientTest() {
 
         ClientDTO requestClientDTO = new ClientDTO("name1");
 
@@ -98,7 +98,7 @@ public class ClientServiceTest {
      */
 
     @Test
-    public void getClientsTest() {
+    void getClientsTest() {
 
         Client client1 = new Client("name1");
         Client client2 = new Client("name2");
@@ -120,7 +120,7 @@ public class ClientServiceTest {
      * Test add client with all fields set
      */
     @Test
-    public void addClientComprehensiveTest() {
+    void addClientComprehensiveTest() {
 
         ClientDTO requestClientDTO = new ClientDTO("name1");
 
@@ -171,7 +171,7 @@ public class ClientServiceTest {
      * Test update client with all fields set
      */
     @Test
-    public void updateClientComprehensiveTest() {
+    void updateClientComprehensiveTest() {
 
         ClientDTO requestClientDTO = new ClientDTO("name1");
 

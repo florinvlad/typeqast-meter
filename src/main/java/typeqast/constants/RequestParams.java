@@ -2,6 +2,9 @@ package typeqast.constants;
 
 public class RequestParams {
 
+    private RequestParams() {
+    }
+
     public static final String ID = "id";
 
     public static final String CLIENT_ID = "client_id";

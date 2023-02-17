@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @DataJpaTest
-public class MeterRepositoryTest {
+class MeterRepositoryTest {
 
     @Autowired
     private MeterRepository meterRepository;
@@ -25,7 +25,7 @@ public class MeterRepositoryTest {
     }
 
     @Test
-    public void addMeterTest() {
+    void addMeterTest() {
 
         Meter meter = new Meter("meter1");
 
@@ -33,10 +33,12 @@ public class MeterRepositoryTest {
 
         MeterAssertions.execute(meter, resultMeter);
 
+        Assertions.assertTrue(true);
+
     }
 
     @Test
-    public void updateMeterTest() {
+    void updateMeterTest() {
 
         Meter meter = new Meter("meter1");
 
@@ -60,7 +62,7 @@ public class MeterRepositoryTest {
     }
 
     @Test
-    public void getMetersTest() {
+    void getMetersTest() {
 
         Meter meter = new Meter("meter1");
 
@@ -77,7 +79,7 @@ public class MeterRepositoryTest {
         List<Meter> meterResultList = meterRepository.findAll();
 
         Assertions.assertNotNull(meterResultList);
-        Assertions.assertEquals(meterResultList.size(), 2);
+        Assertions.assertEquals(2, meterResultList.size());
 
     }
 

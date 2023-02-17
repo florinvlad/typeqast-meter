@@ -1,6 +1,7 @@
 package typeqast.repository;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-public class AddressRepositoryTest {
+class AddressRepositoryTest {
 
     @Autowired
     private AddressRepository addressRepository;
@@ -25,18 +26,19 @@ public class AddressRepositoryTest {
     }
 
     @Test
-    public void addAddressTest() {
+    void addAddressTest() {
 
         Address address = new Address("country1", "city1", "street1", 1);
 
         Address resultAddress = addressRepository.save(address);
 
         AddressAssertions.execute(address, resultAddress);
+        Assertions.assertTrue(true);
 
     }
 
     @Test
-    public void updateAddressTest() {
+    void updateAddressTest() {
 
         Address address = new Address("country1", "city1", "street1", 1);
 
@@ -62,7 +64,7 @@ public class AddressRepositoryTest {
     }
 
     @Test
-    public void getAddressesTest() {
+    void getAddressesTest() {
 
         Address address = new Address("country1", "city1", "street1", 1);
 
@@ -79,7 +81,7 @@ public class AddressRepositoryTest {
         List<Address> addressResultList = addressRepository.findAll();
 
         assertNotNull(addressResultList);
-        assertEquals(addressResultList.size(), 2);
+        assertEquals(2,addressResultList.size());
 
     }
 

@@ -1,7 +1,6 @@
 package typeqast.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import typeqast.entities.Address;
 import typeqast.entities.Client;
 import typeqast.entities.Meter;

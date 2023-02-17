@@ -5,6 +5,9 @@ import typeqast.entities.dto.ReadingDTO;
 
 public class ReadingMapper {
 
+    private ReadingMapper() {
+    }
+
     public static Reading toReading(ReadingDTO readingDTO) {
 
         Reading reading = new Reading();
