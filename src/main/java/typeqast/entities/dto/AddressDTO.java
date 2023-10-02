@@ -1,10 +1,16 @@
 package typeqast.entities.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 import typeqast.entities.Client;
 
 import java.math.BigInteger;
 
+@Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AddressDTO {
 
     private BigInteger id;
@@ -25,57 +31,5 @@ public class AddressDTO {
         this.city = city;
         this.street = street;
         this.number = number;
-    }
-
-    public AddressDTO() {
-
-    }
-
-    public Client getClient() {
-        return client;
-    }
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public Integer getNumber() {
-        return number;
-    }
-
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public BigInteger getId() {
-        return id;
-    }
-
-    public void setId(BigInteger id) {
-        this.id = id;
     }
 }
